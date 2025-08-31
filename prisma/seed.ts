@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import * as bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -35,12 +36,14 @@ async function main() {
   })
 
   // Criar usuário admin
+  const hashedPassword = await bcrypt.hash('123456', 10)
   const admin = await prisma.user.upsert({
     where: { email: 'admin@shopmy.com' },
     update: {},
     create: {
       name: 'Administrador',
       email: 'admin@shopmy.com',
+      password: hashedPassword,
       role: 'ADMIN'
     }
   })
@@ -121,11 +124,12 @@ async function main() {
     }
   ]
 
+  // Limpar produtos existentes
+  await prisma.product.deleteMany({})
+  
   for (const product of products) {
-    await prisma.product.upsert({
-      where: { name: product.name },
-      update: {},
-      create: product
+    await prisma.product.create({
+      data: product
     })
   }
 
