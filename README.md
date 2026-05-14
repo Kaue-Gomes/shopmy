@@ -2,7 +2,7 @@
 
 Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, incluindo sistema de pagamentos, gestão de produtos e painel administrativo.
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 
 - **Frontend Moderno**: Interface responsiva com React e Next.js
 - **Sistema de Pagamentos**: Integração completa com Stripe
@@ -13,7 +13,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 - **Banco de Dados**: Prisma ORM com SQLite
 - **Design Responsivo**: Interface moderna com Tailwind CSS
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 - **Frontend**: React, Next.js 14, TypeScript
 - **Styling**: Tailwind CSS, Radix UI
@@ -23,7 +23,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 - **Pagamentos**: Stripe
 - **Deploy**: Vercel (recomendado)
 
-## 📦 Instalação
+##  Instalação
 
 ### Pré-requisitos
 
@@ -82,14 +82,14 @@ npm run dev
 
 O projeto estará disponível em `http://localhost:3000`
 
-## 🔧 Configuração do Stripe
+## Configuração do Stripe
 
 1. Crie uma conta no [Stripe](https://stripe.com)
 2. Obtenha suas chaves de API no dashboard do Stripe
 3. Configure o webhook para `http://localhost:3000/api/webhooks/stripe`
 4. Adicione as chaves no arquivo `.env.local`
 
-## 👤 Usuários de Demonstração
+## Usuários de Demonstração
 
 ### Administrador
 
@@ -102,16 +102,16 @@ O projeto estará disponível em `http://localhost:3000`
 - Crie uma conta através da página de cadastro
 - Ou use qualquer email/senha (sistema de demonstração)
 
-## 📱 Funcionalidades Principais
+##  Funcionalidades Principais
 
 ### Para Usuários
 
-- ✅ Navegação por produtos e categorias
-- ✅ Sistema de busca
-- ✅ Carrinho de compras
-- ✅ Checkout com Stripe
-- ✅ Histórico de pedidos
-- ✅ Perfil de usuário
+-  Navegação por produtos e categorias
+-  Sistema de busca
+-  Carrinho de compras
+-  Checkout com Stripe
+-  Histórico de pedidos
+-  Perfil de usuário
 
 ### Para Administradores
 
@@ -121,7 +121,7 @@ O projeto estará disponível em `http://localhost:3000`
 - ✅ Visualização de pedidos
 - ✅ Controle de estoque
 
-## 🎨 Design e UX
+##  Design e UX
 
 - Interface moderna e responsiva
 - Componentes reutilizáveis
@@ -129,7 +129,7 @@ O projeto estará disponível em `http://localhost:3000`
 - Design system consistente
 - Acessibilidade básica
 
-## 🚀 Deploy
+## Deploy
 
 ### Vercel (Recomendado)
 
@@ -146,7 +146,7 @@ O projeto pode ser deployado em qualquer plataforma que suporte Next.js:
 - DigitalOcean
 - AWS
 
-## 📊 Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```
 shopmy/
@@ -164,7 +164,7 @@ shopmy/
 └── context/              # Contextos React
 ```
 
-## 🔒 Segurança
+##  Segurança
 
 - Autenticação com NextAuth.js
 - Validação de dados com Zod
@@ -172,7 +172,7 @@ shopmy/
 - Proteção de rotas administrativas
 - Webhooks seguros do Stripe
 
-## 📈 Performance
+##  Performance
 
 - Server-side rendering (SSR)
 - Static generation quando possível
@@ -180,7 +180,7 @@ shopmy/
 - Lazy loading de componentes
 - Cache de dados
 
-## 🤝 Contribuição
+##  Contribuição
 
 1. Fork o projeto
 2. Crie uma branch para sua feature
@@ -188,11 +188,11 @@ shopmy/
 4. Push para a branch
 5. Abra um Pull Request
 
-## 📄 Licença
+##  Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 🆘 Suporte
+##  Suporte
 
 Se você encontrar algum problema ou tiver dúvidas:
 
@@ -201,7 +201,7 @@ Se você encontrar algum problema ou tiver dúvidas:
 3. Abra uma nova issue
 4. Entre em contato
 
-## 🎯 Próximos Passos
+##  Próximos Passos
 
 - [ ] Sistema de avaliações
 - [ ] Cupons de desconto
