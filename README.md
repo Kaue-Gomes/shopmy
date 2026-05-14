@@ -36,7 +36,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 1. **Clone o repositório**
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/Kaue-Gomes/shopmy
 cd shopmy
 ```
 
