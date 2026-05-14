@@ -11,8 +11,8 @@ async function main() {
     create: {
       name: 'Eletrônicos',
       description: 'Produtos eletrônicos e tecnologia',
-      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500'
-    }
+      image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500',
+    },
   })
 
   const clothing = await prisma.category.upsert({
@@ -21,8 +21,8 @@ async function main() {
     create: {
       name: 'Roupas',
       description: 'Vestuário e acessórios',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500'
-    }
+      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
+    },
   })
 
   const home = await prisma.category.upsert({
@@ -31,21 +31,32 @@ async function main() {
     create: {
       name: 'Casa',
       description: 'Produtos para casa e decoração',
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500'
-    }
+      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500',
+    },
   })
 
-  // Criar usuário admin
-  const hashedPassword = await bcrypt.hash('123456', 10)
+  // Usuário admin: defina SEED_ADMIN_PASSWORD no .env / .env.local
+  const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@shopmy.com'
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD
+  if (!adminPassword || adminPassword.length < 8) {
+    throw new Error(
+      'Defina SEED_ADMIN_PASSWORD no ambiente (mínimo 8 caracteres) antes de rodar o seed.'
+    )
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 10)
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@shopmy.com' },
-    update: {},
+    where: { email: adminEmail },
+    update: {
+      password: hashedPassword,
+      role: 'ADMIN',
+    },
     create: {
       name: 'Administrador',
-      email: 'admin@shopmy.com',
+      email: adminEmail,
       password: hashedPassword,
-      role: 'ADMIN'
-    }
+      role: 'ADMIN',
+    },
   })
 
   // Criar produtos
@@ -57,7 +68,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500',
       stock: 50,
       featured: true,
-      categoryId: electronics.id
+      categoryId: electronics.id,
     },
     {
       name: 'Notebook MacBook Pro',
@@ -66,7 +77,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500',
       stock: 25,
       featured: true,
-      categoryId: electronics.id
+      categoryId: electronics.id,
     },
     {
       name: 'Camiseta Básica',
@@ -75,7 +86,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
       stock: 100,
       featured: false,
-      categoryId: clothing.id
+      categoryId: clothing.id,
     },
     {
       name: 'Tênis Esportivo',
@@ -84,7 +95,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500',
       stock: 75,
       featured: true,
-      categoryId: clothing.id
+      categoryId: clothing.id,
     },
     {
       name: 'Mesa de Escritório',
@@ -93,7 +104,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500',
       stock: 30,
       featured: false,
-      categoryId: home.id
+      categoryId: home.id,
     },
     {
       name: 'Cadeira Ergonômica',
@@ -102,7 +113,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=500',
       stock: 20,
       featured: true,
-      categoryId: home.id
+      categoryId: home.id,
     },
     {
       name: 'Fone de Ouvido Bluetooth',
@@ -111,7 +122,7 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
       stock: 60,
       featured: false,
-      categoryId: electronics.id
+      categoryId: electronics.id,
     },
     {
       name: 'Relógio Smartwatch',
@@ -120,16 +131,16 @@ async function main() {
       image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
       stock: 40,
       featured: true,
-      categoryId: electronics.id
-    }
+      categoryId: electronics.id,
+    },
   ]
 
   // Limpar produtos existentes
   await prisma.product.deleteMany({})
-  
+
   for (const product of products) {
     await prisma.product.create({
-      data: product
+      data: product,
     })
   }
 

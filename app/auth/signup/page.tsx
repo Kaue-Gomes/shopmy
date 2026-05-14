@@ -69,9 +69,7 @@ export default function SignUpPage() {
                 <Package className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="mt-2 text-sm font-medium text-gray-900">Conta criada!</h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Redirecionando para a página inicial...
-              </p>
+              <p className="mt-1 text-sm text-gray-500">Redirecionando para a página inicial...</p>
             </div>
           </CardContent>
         </Card>
@@ -87,9 +85,7 @@ export default function SignUpPage() {
             <Package className="h-8 w-8" />
             <span className="text-2xl font-bold">ShopMy</span>
           </Link>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Crie sua conta
-          </h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Crie sua conta</h2>
           <p className="mt-2 text-sm text-gray-600">
             Ou{' '}
             <Link href="/auth/signin" className="font-medium text-primary hover:text-primary/80">
@@ -101,9 +97,7 @@ export default function SignUpPage() {
         <Card>
           <CardHeader>
             <CardTitle>Criar Conta</CardTitle>
-            <CardDescription>
-              Preencha os dados abaixo para criar sua conta
-            </CardDescription>
+            <CardDescription>Preencha os dados abaixo para criar sua conta</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -112,7 +106,7 @@ export default function SignUpPage() {
                   {error}
                 </div>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="name">Nome</Label>
                 <Input

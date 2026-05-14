@@ -50,8 +50,8 @@ DATABASE_URL="file:./dev.db"`
         <div className="p-6 space-y-6">
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
             <p className="text-orange-800">
-              Para finalizar compras, você precisa configurar as chaves da API do Stripe. 
-              Siga os passos abaixo para configurar o sistema de pagamentos.
+              Para finalizar compras, você precisa configurar as chaves da API do Stripe. Siga os
+              passos abaixo para configurar o sistema de pagamentos.
             </p>
           </div>
 
@@ -65,12 +65,37 @@ DATABASE_URL="file:./dev.db"`
               </CardHeader>
               <CardContent className="space-y-4">
                 <ol className="list-decimal list-inside space-y-2 text-sm">
-                  <li>Acesse o <a href="https://dashboard.stripe.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Stripe Dashboard</a></li>
+                  <li>
+                    Acesse o{' '}
+                    <a
+                      href="https://dashboard.stripe.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Stripe Dashboard
+                    </a>
+                  </li>
                   <li>Faça login ou crie uma conta</li>
-                  <li>Vá em "Developers" → "API keys"</li>
-                  <li>Copie a "Publishable key" e "Secret key"</li>
-                  <li>Para webhook, vá em "Webhooks" → "Add endpoint"</li>
-                  <li>URL: <code className="bg-gray-100 px-2 py-1 rounded">http://localhost:3000/api/webhooks/stripe</code></li>
+                  <li>
+                    Vá em <code className="rounded bg-muted px-1 text-sm">Developers</code> →{' '}
+                    <code className="rounded bg-muted px-1 text-sm">API keys</code>
+                  </li>
+                  <li>
+                    Copie a <code className="rounded bg-muted px-1 text-sm">Publishable key</code> e{' '}
+                    <code className="rounded bg-muted px-1 text-sm">Secret key</code>
+                  </li>
+                  <li>
+                    Para webhook, vá em{' '}
+                    <code className="rounded bg-muted px-1 text-sm">Webhooks</code> →{' '}
+                    <code className="rounded bg-muted px-1 text-sm">Add endpoint</code>
+                  </li>
+                  <li>
+                    URL:{' '}
+                    <code className="bg-gray-100 px-2 py-1 rounded">
+                      http://localhost:3000/api/webhooks/stripe
+                    </code>
+                  </li>
                 </ol>
               </CardContent>
             </Card>
@@ -84,7 +109,8 @@ DATABASE_URL="file:./dev.db"`
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  Crie um arquivo <code className="bg-gray-100 px-2 py-1 rounded">.env.local</code> na raiz do projeto:
+                  Crie um arquivo <code className="bg-gray-100 px-2 py-1 rounded">.env.local</code>{' '}
+                  na raiz do projeto:
                 </p>
                 <div className="relative">
                   <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto">
@@ -130,7 +156,7 @@ DATABASE_URL="file:./dev.db"`
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="font-semibold text-blue-800 mb-2">💡 Dica</h3>
             <p className="text-blue-700 text-sm">
-              Use as chaves de teste (que começam com <code>pk_test_</code> e <code>sk_test_</code>) 
+              Use as chaves de teste (que começam com <code>pk_test_</code> e <code>sk_test_</code>)
               para desenvolvimento. Em produção, use as chaves ao vivo.
             </p>
           </div>
@@ -139,9 +165,7 @@ DATABASE_URL="file:./dev.db"`
             <Button variant="outline" onClick={onClose}>
               Entendi
             </Button>
-            <Button onClick={onClose}>
-              Configurar Agora
-            </Button>
+            <Button onClick={onClose}>Configurar Agora</Button>
           </div>
         </div>
       </div>

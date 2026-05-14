@@ -14,7 +14,7 @@ export default function CheckoutCancelPage() {
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <XCircle className="h-8 w-8 text-red-600" />
             </div>
-            
+
             <h1 className="text-2xl font-bold mb-2">Pagamento Cancelado</h1>
             <p className="text-gray-600 mb-6">
               Seu pagamento foi cancelado. Nenhuma cobrança foi realizada.

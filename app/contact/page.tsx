@@ -12,7 +12,7 @@ export default function ContactPage() {
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,7 +25,7 @@ export default function ContactPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -33,7 +33,7 @@ export default function ContactPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">Entre em Contato</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Informações de Contato */}
           <div className="space-y-6">
@@ -42,39 +42,41 @@ export default function ContactPage() {
                 <CardTitle>Informações de Contato</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                                 <div className="flex items-center gap-3">
-                   <Mail className="h-5 w-5 text-blue-600" />
-                   <div>
-                     <p className="font-medium">Email</p>
-                     <p className="text-gray-600">kauegomessales189@gmail.com</p>
-                   </div>
-                 </div>
-                 
-                 <div className="flex items-center gap-3">
-                   <Phone className="h-5 w-5 text-blue-600" />
-                   <div>
-                     <p className="font-medium">Telefone</p>
-                     <p className="text-gray-600">(88) 99709-0674</p>
-                   </div>
-                 </div>
-                 
-                 <div className="flex items-center gap-3">
-                   <MapPin className="h-5 w-5 text-blue-600" />
-                   <div>
-                     <p className="font-medium">Endereço</p>
-                     <p className="text-gray-600">
-                       Fortaleza - CE<br />
-                       Brasil
-                     </p>
-                   </div>
-                 </div>
-                
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Email</p>
+                    <p className="text-gray-600">kauegomessales189@gmail.com</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Telefone</p>
+                    <p className="text-gray-600">(88) 99709-0674</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium">Endereço</p>
+                    <p className="text-gray-600">
+                      Fortaleza - CE
+                      <br />
+                      Brasil
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <Clock className="h-5 w-5 text-blue-600" />
                   <div>
                     <p className="font-medium">Horário de Funcionamento</p>
                     <p className="text-gray-600">
-                      Segunda a Sexta: 9h às 18h<br />
+                      Segunda a Sexta: 9h às 18h
+                      <br />
                       Sábado: 9h às 14h
                     </p>
                   </div>
@@ -120,7 +122,7 @@ export default function ContactPage() {
                     placeholder="Seu nome completo"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -133,7 +135,7 @@ export default function ContactPage() {
                     placeholder="seu@email.com"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="subject">Assunto</Label>
                   <Input
@@ -145,7 +147,7 @@ export default function ContactPage() {
                     placeholder="Assunto da mensagem"
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="message">Mensagem</Label>
                   <textarea
@@ -159,7 +161,7 @@ export default function ContactPage() {
                     placeholder="Sua mensagem aqui..."
                   />
                 </div>
-                
+
                 <Button type="submit" className="w-full">
                   Enviar Mensagem
                 </Button>
@@ -181,21 +183,21 @@ export default function ContactPage() {
                   Basta navegar pelos produtos, adicionar ao carrinho e finalizar a compra.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Qual o prazo de entrega?</h3>
                 <p className="text-gray-600 text-sm">
                   O prazo varia de 3 a 7 dias úteis, dependendo da sua localização.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Posso cancelar meu pedido?</h3>
                 <p className="text-gray-600 text-sm">
                   Sim, você pode cancelar até 24h após a confirmação do pedido.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Quais formas de pagamento?</h3>
                 <p className="text-gray-600 text-sm">

@@ -1,17 +1,17 @@
-import { NextAuthOptions } from "next-auth"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import CredentialsProvider from "next-auth/providers/credentials"
-import { prisma } from "./prisma"
-import * as bcrypt from "bcryptjs"
+import { NextAuthOptions } from 'next-auth'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { prisma } from './prisma'
+import * as bcrypt from 'bcryptjs'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -20,8 +20,8 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email
-          }
+            email: credentials.email,
+          },
         })
 
         if (!user) {
@@ -29,8 +29,8 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Verificar senha usando bcrypt
-        const isValidPassword = await bcrypt.compare(credentials.password, user.password || "")
-        
+        const isValidPassword = await bcrypt.compare(credentials.password, user.password || '')
+
         if (isValidPassword) {
           return {
             id: user.id,
@@ -41,11 +41,11 @@ export const authOptions: NextAuthOptions = {
         }
 
         return null
-      }
-    })
+      },
+    }),
   ],
   session: {
-    strategy: "jwt"
+    strategy: 'jwt',
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -60,9 +60,9 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string
       }
       return session
-    }
+    },
   },
   pages: {
-    signIn: "/auth/signin",
-  }
+    signIn: '/auth/signin',
+  },
 }

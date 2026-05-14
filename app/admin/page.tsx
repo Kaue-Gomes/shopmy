@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,17 +18,10 @@ export default function AdminPage() {
     totalProducts: 0,
     totalOrders: 0,
     totalRevenue: 0,
-    totalUsers: 0
+    totalUsers: 0,
   })
 
-  useEffect(() => {
-    if (session?.user?.role !== 'ADMIN') {
-      router.push('/')
-    }
-    fetchData()
-  }, [session, router])
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       // Só busca dados se o usuário for admin
       if (session?.user?.role !== 'ADMIN') {
@@ -38,7 +31,7 @@ export default function AdminPage() {
 
       const [productsRes, statsRes] = await Promise.all([
         fetch('/api/products'),
-        fetch('/api/admin/stats')
+        fetch('/api/admin/stats'),
       ])
 
       if (productsRes.ok) {
@@ -55,18 +48,26 @@ export default function AdminPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [session])
+
+  useEffect(() => {
+    if (session?.user?.role !== 'ADMIN') {
+      router.push('/')
+      return
+    }
+    void fetchData()
+  }, [session, router, fetchData])
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Tem certeza que deseja deletar este produto?')) return
 
     try {
       const response = await fetch(`/api/products/${productId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       })
 
       if (response.ok) {
-        setProducts(products.filter(p => p.id !== productId))
+        setProducts(products.filter((p) => p.id !== productId))
       }
     } catch (error) {
       console.error('Erro ao deletar produto:', error)
@@ -154,7 +155,10 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-4">
               {products.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gray-200 rounded"></div>
                     <div>
@@ -163,9 +167,13 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        product.stock > 0
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       {product.stock} em estoque
                     </span>
                     <Link href={`/admin/products/${product.id}/edit`}>

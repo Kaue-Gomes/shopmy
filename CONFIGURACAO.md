@@ -25,6 +25,7 @@ ADMIN_PASSWORD=123456
 ## Credenciais de Acesso
 
 ### Usuário Administrador
+
 - **Email**: admin@shopmy.com
 - **Senha**: 123456
 
@@ -37,13 +38,16 @@ ADMIN_PASSWORD=123456
 ## Problemas Conhecidos
 
 ### Erros 401
+
 - Os erros 401 são normais quando não há autenticação
 - A página de admin só funciona para usuários autenticados como ADMIN
 
 ### Warnings de Imagens
+
 - As imagens agora têm a prop `sizes` configurada para melhor performance
 - Os warnings foram corrigidos
 
 ### Content Script Errors
+
 - Os erros de content script são de extensões do navegador
 - Não afetam o funcionamento da aplicação

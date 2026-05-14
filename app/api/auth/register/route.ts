@@ -1,59 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import * as bcrypt from 'bcryptjs'
+import { registerSchema } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json()
-
-    if (!name || !email || !password) {
+    const body = await request.json().catch(() => null)
+    const parsed = registerSchema.safeParse(body)
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Todos os campos são obrigatórios' },
+        { error: 'Dados inválidos', issues: parsed.error.flatten() },
         { status: 400 }
       )
     }
 
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: 'A senha deve ter pelo menos 6 caracteres' },
-        { status: 400 }
-      )
-    }
+    const { name, email, password } = parsed.data
 
-    // Verificar se o email já existe
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     })
 
     if (existingUser) {
-      return NextResponse.json(
-        { error: 'Este email já está em uso' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Este email já está em uso' }, { status: 400 })
     }
 
-    // Criar usuário
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        role: 'USER'
-      }
+        password: hashedPassword,
+        role: 'USER',
+      },
     })
 
-    return NextResponse.json({
-      message: 'Usuário criado com sucesso',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        message: 'Usuário criado com sucesso',
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Erro ao criar usuário:', error)
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

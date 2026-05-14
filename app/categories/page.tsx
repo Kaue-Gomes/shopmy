@@ -12,13 +12,13 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     fetch('/api/categories')
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error('Erro ao buscar categorias')
         }
         return res.json()
       })
-      .then(data => {
+      .then((data) => {
         setCategories(data || [])
         setLoading(false)
       })

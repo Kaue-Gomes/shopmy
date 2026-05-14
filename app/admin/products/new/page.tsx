@@ -1,19 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowLeft, Save } from 'lucide-react'
+import { ArrowLeft, Save, Upload } from 'lucide-react'
 import Link from 'next/link'
+import type { Category } from '@prisma/client'
+import { toast } from 'sonner'
 
 export default function NewProductPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
+  const [uploadBusy, setUploadBusy] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -21,12 +25,58 @@ export default function NewProductPage() {
     image: '',
     stock: '',
     featured: false,
-    categoryId: ''
+    categoryId: '',
   })
 
+  useEffect(() => {
+    ;(async () => {
+      const res = await fetch('/api/categories')
+      if (res.ok) setCategories(await res.json())
+    })()
+  }, [])
+
+  useEffect(() => {
+    if (status === 'loading') return
+    if (session?.user?.role !== 'ADMIN') {
+      router.replace('/')
+    }
+  }, [status, session, router])
+
+  if (status === 'loading') {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <p className="text-muted-foreground">Carregando…</p>
+      </div>
+    )
+  }
+
   if (session?.user?.role !== 'ADMIN') {
-    router.push('/')
     return null
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const fd = new FormData()
+    fd.append('file', file)
+
+    setUploadBusy(true)
+    try {
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        toast.error(data.error || 'Falha no upload')
+        return
+      }
+      if (typeof data.url === 'string') {
+        setFormData((prev) => ({ ...prev, image: data.url }))
+        toast.success('Imagem enviada ao Blob')
+      }
+    } finally {
+      setUploadBusy(false)
+      e.target.value = ''
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,29 +86,33 @@ export default function NewProductPage() {
     try {
       const response = await fetch('/api/products', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData),
       })
 
+      const data = await response.json().catch(() => ({}))
+
       if (response.ok) {
+        toast.success('Produto criado')
         router.push('/admin')
       } else {
-        console.error('Erro ao criar produto')
+        toast.error(data.error || 'Não foi possível criar produto')
       }
-    } catch (error) {
-      console.error('Erro ao criar produto:', error)
+    } catch {
+      toast.error('Erro de rede')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
     }))
   }
 
@@ -67,21 +121,21 @@ export default function NewProductPage() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link href="/admin">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" type="button">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold">Novo Produto</h1>
+          <h1 className="text-3xl font-bold">Novo produto</h1>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Criar Produto</CardTitle>
+            <CardTitle>Criar produto</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Nome do Produto</Label>
+                <Label htmlFor="name">Nome</Label>
                 <Input
                   id="name"
                   name="name"
@@ -101,8 +155,8 @@ export default function NewProductPage() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Descrição do produto"
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  placeholder="Descrição"
                 />
               </div>
 
@@ -114,6 +168,7 @@ export default function NewProductPage() {
                     name="price"
                     type="number"
                     step="0.01"
+                    min="0"
                     value={formData.price}
                     onChange={handleChange}
                     required
@@ -127,6 +182,7 @@ export default function NewProductPage() {
                     id="stock"
                     name="stock"
                     type="number"
+                    min="0"
                     value={formData.stock}
                     onChange={handleChange}
                     required
@@ -135,16 +191,39 @@ export default function NewProductPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image">URL da Imagem</Label>
+              <div className="space-y-3">
+                <Label htmlFor="image">URL da imagem</Label>
                 <Input
                   id="image"
                   name="image"
+                  type="url"
                   value={formData.image}
                   onChange={handleChange}
                   required
-                  placeholder="https://exemplo.com/imagem.jpg"
+                  placeholder="https://…"
+                  className="font-mono text-sm"
                 />
+                <div className="flex items-center gap-2">
+                  <input
+                    id="imgblob"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    aria-hidden
+                    onChange={handleImageUpload}
+                  />
+                  <Label
+                    htmlFor="imgblob"
+                    className="inline-flex cursor-pointer items-center rounded-md border border-input px-3 py-2 text-sm hover:bg-muted"
+                  >
+                    <Upload className="mr-2 h-4 w-4" aria-hidden />
+                    {uploadBusy ? 'Enviando…' : 'Upload (Vercel Blob)'}
+                  </Label>
+                  <span className="text-xs text-muted-foreground">
+                    Requer <code className="rounded bg-muted px-1">BLOB_READ_WRITE_TOKEN</code> no
+                    servidor
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -155,12 +234,14 @@ export default function NewProductPage() {
                   value={formData.categoryId}
                   onChange={handleChange}
                   required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <option value="">Selecione uma categoria</option>
-                  <option value="cat1">Eletrônicos</option>
-                  <option value="cat2">Roupas</option>
-                  <option value="cat3">Casa</option>
+                  <option value="">Selecione</option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -171,15 +252,15 @@ export default function NewProductPage() {
                   name="featured"
                   checked={formData.featured}
                   onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300"
+                  className="h-4 w-4 rounded border-input text-primary accent-primary"
                 />
-                <Label htmlFor="featured">Produto em Destaque</Label>
+                <Label htmlFor="featured">Destaque na home</Label>
               </div>
 
               <div className="flex gap-4">
                 <Button type="submit" disabled={loading}>
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? 'Salvando...' : 'Salvar Produto'}
+                  {loading ? 'Salvando…' : 'Salvar produto'}
                 </Button>
                 <Link href="/admin">
                   <Button type="button" variant="outline">

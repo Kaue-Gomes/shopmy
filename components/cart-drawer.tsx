@@ -2,11 +2,13 @@
 
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { useCart } from '@/context/cart-context'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { EmptyCart } from '@/components/empty-states'
 
 interface CartDrawerProps {
   isOpen: boolean
@@ -16,8 +18,6 @@ interface CartDrawerProps {
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { state, dispatch } = useCart()
   const { data: session } = useSession()
-
-  if (!isOpen) return null
 
   const handleUpdateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
@@ -32,47 +32,48 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="absolute right-0 top-0 h-full w-full max-w-md bg-background shadow-lg">
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-lg font-semibold">Carrinho</h2>
-            <Button variant="ghost" size="icon" onClick={onClose}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
+      <SheetContent className="p-0 bg-background" side="right" aria-describedby={undefined}>
+        <SheetTitle className="sr-only">Carrinho de compras</SheetTitle>
+        <div className="flex h-full flex-col border-b bg-muted/40">
+          <div className="flex items-center justify-between p-4 border-b bg-background">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <ShoppingBag className="h-5 w-5 text-primary" aria-hidden />
+              Carrinho
+            </h2>
+            <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fechar carrinho">
               <X className="h-4 w-4" />
             </Button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4">
             {state.items.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center">
-                <ShoppingBag className="h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Seu carrinho está vazio</p>
-                <Link href="/products">
-                  <Button className="mt-4" onClick={onClose}>
-                    Ver Produtos
-                  </Button>
-                </Link>
-              </div>
+              <EmptyCart onDismiss={onClose} />
             ) : (
               <div className="space-y-4">
                 {state.items.map((item) => (
-                  <Card key={item.product.id}>
+                  <Card
+                    key={item.product.id}
+                    className="overflow-hidden border-border/80 shadow-sm transition-shadow hover:shadow-md"
+                  >
                     <CardContent className="p-4">
                       <div className="flex gap-4">
-                        <div className="relative h-16 w-16 flex-shrink-0">
+                        <div className="relative h-16 w-16 shrink-0 rounded-md overflow-hidden ring-1 ring-border">
                           <Image
                             src={item.product.image}
                             alt={item.product.name}
                             fill
                             sizes="64px"
-                            className="rounded-md object-cover"
+                            className="object-cover"
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-sm truncate">
-                            {item.product.name}
-                          </h3>
+                          <h3 className="font-medium text-sm truncate">{item.product.name}</h3>
                           <p className="text-sm text-muted-foreground">
                             R$ {item.product.price.toFixed(2)}
                           </p>
@@ -80,33 +81,34 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-6 w-6"
-                              onClick={() => handleUpdateQuantity(
-                                item.product.id,
-                                item.quantity - 1
-                              )}
+                              className="h-7 w-7"
+                              onClick={() =>
+                                handleUpdateQuantity(item.product.id, item.quantity - 1)
+                              }
+                              aria-label="Diminuir quantidade"
                             >
                               <Minus className="h-3 w-3" />
                             </Button>
-                            <span className="text-sm w-8 text-center">
+                            <span className="text-sm w-8 text-center tabular-nums">
                               {item.quantity}
                             </span>
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-6 w-6"
-                              onClick={() => handleUpdateQuantity(
-                                item.product.id,
-                                item.quantity + 1
-                              )}
+                              className="h-7 w-7"
+                              onClick={() =>
+                                handleUpdateQuantity(item.product.id, item.quantity + 1)
+                              }
+                              aria-label="Aumentar quantidade"
                             >
                               <Plus className="h-3 w-3" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-6 w-6 text-destructive"
+                              className="h-7 w-7 text-destructive ml-auto"
                               onClick={() => handleRemoveItem(item.product.id)}
+                              aria-label="Remover item"
                             >
                               <X className="h-3 w-3" />
                             </Button>
@@ -121,35 +123,27 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           </div>
 
           {state.items.length > 0 && (
-            <div className="border-t p-4 space-y-4">
+            <div className="border-t p-4 space-y-4 bg-background">
               <div className="flex justify-between text-lg font-semibold">
-                <span>Total:</span>
-                <span>R$ {state.total.toFixed(2)}</span>
+                <span>Total</span>
+                <span className="text-primary">R$ {state.total.toFixed(2)}</span>
               </div>
               <div className="space-y-2">
-                {session ? (
-                  <Link href="/checkout" className="block">
-                    <Button className="w-full" onClick={onClose}>
-                      Finalizar Compra
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/auth/signin" className="block">
-                    <Button className="w-full" onClick={onClose}>
-                      Entrar para Comprar
-                    </Button>
-                  </Link>
-                )}
-                <Link href="/cart" className="block">
-                  <Button variant="outline" className="w-full" onClick={onClose}>
-                    Ver Carrinho
+                <Link href="/checkout" className="block">
+                  <Button className="w-full" onClick={onClose}>
+                    {session ? 'Finalizar compra' : 'Finalizar como convidado'}
                   </Button>
                 </Link>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/products" onClick={onClose}>
+                    Continuar comprando
+                  </Link>
+                </Button>
               </div>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   )
 }

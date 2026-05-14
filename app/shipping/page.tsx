@@ -6,15 +6,13 @@ export default function ShippingPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-center">Informações de Envio</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Card className="text-center">
             <CardContent className="pt-6">
               <Truck className="h-12 w-12 mx-auto text-blue-600 mb-4" />
               <h3 className="font-semibold mb-2">Entrega Rápida</h3>
-              <p className="text-gray-600 text-sm">
-                3 a 7 dias úteis para todo o Brasil
-              </p>
+              <p className="text-gray-600 text-sm">3 a 7 dias úteis para todo o Brasil</p>
             </CardContent>
           </Card>
 
@@ -22,9 +20,7 @@ export default function ShippingPage() {
             <CardContent className="pt-6">
               <Shield className="h-12 w-12 mx-auto text-green-600 mb-4" />
               <h3 className="font-semibold mb-2">Embalagem Segura</h3>
-              <p className="text-gray-600 text-sm">
-                Produtos protegidos durante o transporte
-              </p>
+              <p className="text-gray-600 text-sm">Produtos protegidos durante o transporte</p>
             </CardContent>
           </Card>
 
@@ -32,9 +28,7 @@ export default function ShippingPage() {
             <CardContent className="pt-6">
               <Package className="h-12 w-12 mx-auto text-purple-600 mb-4" />
               <h3 className="font-semibold mb-2">Rastreamento</h3>
-              <p className="text-gray-600 text-sm">
-                Acompanhe seu pedido em tempo real
-              </p>
+              <p className="text-gray-600 text-sm">Acompanhe seu pedido em tempo real</p>
             </CardContent>
           </Card>
         </div>
@@ -110,20 +104,20 @@ export default function ShippingPage() {
                   Para compras acima de R$ 150,00, o frete é grátis para todo o Brasil.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Cálculo do Frete</h3>
                 <p className="text-gray-600">
-                  O valor do frete é calculado automaticamente no checkout baseado no seu CEP, 
-                  peso e dimensões dos produtos.
+                  O valor do frete é calculado automaticamente no checkout baseado no seu CEP, peso
+                  e dimensões dos produtos.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Formas de Pagamento do Frete</h3>
                 <p className="text-gray-600">
-                  O frete pode ser pago junto com o produto ou separadamente, 
-                  dependendo da transportadora escolhida.
+                  O frete pode ser pago junto com o produto ou separadamente, dependendo da
+                  transportadora escolhida.
                 </p>
               </div>
             </div>
@@ -136,9 +130,7 @@ export default function ShippingPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <p className="text-gray-600">
-                Após a confirmação do pagamento, você receberá:
-              </p>
+              <p className="text-gray-600">Após a confirmação do pagamento, você receberá:</p>
               <ul className="space-y-2 text-gray-600">
                 <li>• Email de confirmação com código de rastreamento</li>
                 <li>• Atualizações por SMS (opcional)</li>
@@ -158,23 +150,23 @@ export default function ShippingPage() {
               <div>
                 <h3 className="font-semibold mb-2">Produto não entregue</h3>
                 <p className="text-gray-600">
-                  Se o produto não foi entregue no prazo, entre em contato conosco. 
-                  Investigaremos e resolveremos o problema.
+                  Se o produto não foi entregue no prazo, entre em contato conosco. Investigaremos e
+                  resolveremos o problema.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Produto danificado</h3>
                 <p className="text-gray-600">
-                  Se o produto chegou danificado, tire fotos e entre em contato imediatamente. 
+                  Se o produto chegou danificado, tire fotos e entre em contato imediatamente.
                   Faremos a troca sem custos.
                 </p>
               </div>
-              
+
               <div>
                 <h3 className="font-semibold mb-2">Endereço incorreto</h3>
                 <p className="text-gray-600">
-                  Se você informou o endereço errado, entre em contato o mais rápido possível. 
+                  Se você informou o endereço errado, entre em contato o mais rápido possível.
                   Podemos redirecionar a entrega.
                 </p>
               </div>

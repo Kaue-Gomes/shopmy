@@ -3,11 +3,13 @@
 ## Passos para executar o projeto
 
 ### 1. Instalar dependências
+
 ```bash
 npm install
 ```
 
 ### 2. Configurar banco de dados
+
 ```bash
 npx prisma generate
 npx prisma db push
@@ -15,6 +17,7 @@ npm run db:seed
 ```
 
 ### 3. Configurar variáveis de ambiente
+
 Crie o arquivo `.env.local` na raiz do projeto:
 
 ```env
@@ -35,11 +38,13 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
 ### 4. Executar o projeto
+
 ```bash
 npm run dev
 ```
 
 ### 5. Acessar o projeto
+
 - **Frontend**: http://localhost:3000
 - **Admin**: http://localhost:3000/admin
 - **Login Admin**: admin@shopmy.com / 123456
@@ -47,6 +52,7 @@ npm run dev
 ## 🎯 Funcionalidades Implementadas
 
 ✅ **Frontend Completo**
+
 - Página inicial com produtos em destaque
 - Catálogo de produtos com busca
 - Página de detalhes do produto
@@ -54,18 +60,21 @@ npm run dev
 - Sistema de checkout
 
 ✅ **Backend Completo**
+
 - APIs REST para produtos e categorias
 - Sistema de autenticação
 - Integração com Stripe
 - Webhooks para pagamentos
 
 ✅ **Painel Administrativo**
+
 - Dashboard com estatísticas
 - Gestão de produtos (CRUD)
 - Controle de estoque
 - Visualização de pedidos
 
 ✅ **Design Moderno**
+
 - Interface responsiva
 - Componentes reutilizáveis
 - Animações suaves
@@ -104,6 +113,7 @@ npm run db:seed      # Popular com dados de exemplo
 ## 🎨 Dados de Exemplo
 
 O sistema já vem com:
+
 - 3 categorias (Eletrônicos, Roupas, Casa)
 - 8 produtos de exemplo
 - 1 usuário administrador

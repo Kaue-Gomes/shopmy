@@ -54,9 +54,7 @@ export default function SignInPage() {
             <Package className="h-8 w-8" />
             <span className="text-2xl font-bold">ShopMy</span>
           </Link>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Entre na sua conta
-          </h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Entre na sua conta</h2>
           <p className="mt-2 text-sm text-gray-600">
             Ou{' '}
             <Link href="/auth/signup" className="font-medium text-primary hover:text-primary/80">
@@ -68,9 +66,7 @@ export default function SignInPage() {
         <Card>
           <CardHeader>
             <CardTitle>Entrar</CardTitle>
-            <CardDescription>
-              Digite suas credenciais para acessar sua conta
-            </CardDescription>
+            <CardDescription>Digite suas credenciais para acessar sua conta</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +75,7 @@ export default function SignInPage() {
                   {error}
                 </div>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -108,12 +104,6 @@ export default function SignInPage() {
                 {loading ? 'Entrando...' : 'Entrar'}
               </Button>
             </form>
-
-            <div className="mt-6 p-4 bg-gray-50 rounded">
-              <p className="text-sm text-gray-600 mb-2">Para demonstração:</p>
-              <p className="text-sm text-gray-500">Email: admin@shopmy.com</p>
-              <p className="text-sm text-gray-500">Senha: 123456</p>
-            </div>
           </CardContent>
         </Card>
       </div>

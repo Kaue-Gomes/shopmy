@@ -27,25 +27,28 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 - Conta no Stripe (para pagamentos)
 
 ### Passos para Instalação
 
 1. **Clone o repositório**
+
 ```bash
 git clone <url-do-repositorio>
 cd shopmy
 ```
 
 2. **Instale as dependências**
+
 ```bash
 npm install
 ```
 
 3. **Configure as variáveis de ambiente**
-Crie um arquivo `.env.local` na raiz do projeto:
+   Crie um arquivo `.env.local` na raiz do projeto:
+
 ```env
 # Database
 DATABASE_URL="file:./dev.db"
@@ -64,6 +67,7 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
 4. **Configure o banco de dados**
+
 ```bash
 npx prisma generate
 npx prisma db push
@@ -71,6 +75,7 @@ npx prisma db seed
 ```
 
 5. **Execute o projeto**
+
 ```bash
 npm run dev
 ```
@@ -87,17 +92,20 @@ O projeto estará disponível em `http://localhost:3000`
 ## 👤 Usuários de Demonstração
 
 ### Administrador
+
 - **Email**: admin@shopmy.com
 - **Senha**: 123456
 - **Acesso**: Painel administrativo completo
 
 ### Usuário Comum
+
 - Crie uma conta através da página de cadastro
 - Ou use qualquer email/senha (sistema de demonstração)
 
 ## 📱 Funcionalidades Principais
 
 ### Para Usuários
+
 - ✅ Navegação por produtos e categorias
 - ✅ Sistema de busca
 - ✅ Carrinho de compras
@@ -106,6 +114,7 @@ O projeto estará disponível em `http://localhost:3000`
 - ✅ Perfil de usuário
 
 ### Para Administradores
+
 - ✅ Dashboard com estatísticas
 - ✅ Gestão de produtos (CRUD)
 - ✅ Gestão de categorias
@@ -131,6 +140,7 @@ O projeto estará disponível em `http://localhost:3000`
 ### Outras Plataformas
 
 O projeto pode ser deployado em qualquer plataforma que suporte Next.js:
+
 - Netlify
 - Railway
 - DigitalOcean

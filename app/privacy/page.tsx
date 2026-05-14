@@ -5,7 +5,7 @@ export default function PrivacyPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">Política de Privacidade</h1>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>1. Informações que Coletamos</CardTitle>
@@ -28,9 +28,7 @@ export default function PrivacyPage() {
             <CardTitle>2. Como Usamos suas Informações</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">
-              Utilizamos suas informações para:
-            </p>
+            <p className="text-gray-600 mb-4">Utilizamos suas informações para:</p>
             <ul className="list-disc list-inside space-y-2 text-gray-600">
               <li>Processar e entregar seus pedidos</li>
               <li>Comunicar sobre seu pedido e conta</li>
@@ -46,7 +44,7 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros, 
+              Não vendemos, alugamos ou compartilhamos suas informações pessoais com terceiros,
               exceto quando necessário para processar pagamentos ou cumprir obrigações legais.
             </p>
           </CardContent>
@@ -58,8 +56,8 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              Implementamos medidas de segurança adequadas para proteger suas informações 
-              contra acesso não autorizado, alteração, divulgação ou destruição.
+              Implementamos medidas de segurança adequadas para proteger suas informações contra
+              acesso não autorizado, alteração, divulgação ou destruição.
             </p>
           </CardContent>
         </Card>
@@ -69,9 +67,7 @@ export default function PrivacyPage() {
             <CardTitle>5. Seus Direitos</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600 mb-4">
-              Você tem o direito de:
-            </p>
+            <p className="text-gray-600 mb-4">Você tem o direito de:</p>
             <ul className="list-disc list-inside space-y-2 text-gray-600">
               <li>Acessar suas informações pessoais</li>
               <li>Corrigir informações incorretas</li>
@@ -87,8 +83,12 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco 
-              através da nossa <a href="/contact" className="text-blue-600 hover:underline">página de contato</a>.
+              Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco
+              através da nossa{' '}
+              <a href="/contact" className="text-blue-600 hover:underline">
+                página de contato
+              </a>
+              .
             </p>
           </CardContent>
         </Card>

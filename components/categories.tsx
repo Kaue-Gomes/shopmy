@@ -12,13 +12,13 @@ export function Categories() {
 
   useEffect(() => {
     fetch('/api/categories')
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error('Erro ao buscar categorias')
         }
         return res.json()
       })
-      .then(data => {
+      .then((data) => {
         setCategories(data || [])
         setLoading(false)
       })
@@ -55,25 +55,27 @@ export function Categories() {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Nossas Categorias</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories && categories.length > 0 ? categories.map((category) => (
-            <Link key={category.id} href={`/categories/${category.id}`}>
-              <Card className="group hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
-                  <Image
-                    src={category.image || '/placeholder-category.jpg'}
-                    alt={category.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
-                  <p className="text-gray-600">{category.description}</p>
-                </CardContent>
-              </Card>
-            </Link>
-          )) : (
+          {categories && categories.length > 0 ? (
+            categories.map((category) => (
+              <Link key={category.id} href={`/categories/${category.id}`}>
+                <Card className="group hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="relative h-48 overflow-hidden rounded-t-lg">
+                    <Image
+                      src={category.image || '/placeholder-category.jpg'}
+                      alt={category.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-semibold mb-2">{category.name}</h3>
+                    <p className="text-gray-600">{category.description}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))
+          ) : (
             <div className="col-span-full text-center py-8">
               <p className="text-gray-500">Nenhuma categoria encontrada.</p>
             </div>

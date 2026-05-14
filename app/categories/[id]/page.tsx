@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -22,17 +22,11 @@ export default function CategoryDetailPage() {
   const [loading, setLoading] = useState(true)
   const { dispatch } = useCart()
 
-  useEffect(() => {
-    if (categoryId) {
-      fetchCategoryAndProducts()
-    }
-  }, [categoryId])
-
-  const fetchCategoryAndProducts = async () => {
+  const fetchCategoryAndProducts = useCallback(async () => {
     try {
       const [categoryRes, productsRes] = await Promise.all([
         fetch(`/api/categories/${categoryId}`),
-        fetch(`/api/products?category=${categoryId}`)
+        fetch(`/api/products?category=${categoryId}`),
       ])
 
       if (categoryRes.ok) {
@@ -49,13 +43,18 @@ export default function CategoryDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [categoryId])
+
+  useEffect(() => {
+    if (!categoryId) return
+    void fetchCategoryAndProducts()
+  }, [categoryId, fetchCategoryAndProducts])
 
   const handleAddToCart = (product: Product) => {
     try {
       dispatch({
         type: 'ADD_ITEM',
-        payload: { product, quantity: 1 }
+        payload: { product, quantity: 1 },
       })
     } catch (error) {
       console.error('Erro ao adicionar ao carrinho:', error)
@@ -104,28 +103,32 @@ export default function CategoryDetailPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <Link href="/categories" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+        <Link
+          href="/categories"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar às Categorias
         </Link>
-        
+
         <div className="flex items-center gap-6">
           {category.image && (
             <div className="relative w-24 h-24 rounded-lg overflow-hidden">
-                             <Image
-                 src={category.image}
-                 alt={category.name}
-                 fill
-                 sizes="96px"
-                 className="object-cover"
-               />
+              <Image
+                src={category.image}
+                alt={category.name}
+                fill
+                sizes="96px"
+                className="object-cover"
+              />
             </div>
           )}
           <div>
             <h1 className="text-3xl font-bold mb-2">{category.name}</h1>
             <p className="text-gray-600">{category.description}</p>
             <p className="text-sm text-gray-500 mt-2">
-              {products.length} produto{products.length !== 1 ? 's' : ''} encontrado{products.length !== 1 ? 's' : ''}
+              {products.length} produto{products.length !== 1 ? 's' : ''} encontrado
+              {products.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -136,13 +139,13 @@ export default function CategoryDetailPage() {
           {products.map((product) => (
             <Card key={product.id} className="group hover:shadow-lg transition-shadow">
               <div className="relative h-48 overflow-hidden rounded-t-lg">
-                                 <Image
-                   src={product.image}
-                   alt={product.name}
-                   fill
-                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                   className="object-cover group-hover:scale-105 transition-transform duration-300"
-                 />
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
@@ -151,9 +154,7 @@ export default function CategoryDetailPage() {
                   <span className="text-xl font-bold text-green-600">
                     R$ {product.price.toFixed(2)}
                   </span>
-                  <span className="text-sm text-gray-500">
-                    Estoque: {product.stock}
-                  </span>
+                  <span className="text-sm text-gray-500">Estoque: {product.stock}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button
