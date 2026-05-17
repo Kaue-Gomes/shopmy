@@ -10,7 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <SessionProvider>
       <CartProvider>
         {children}
-        <Toaster richColors closeButton duration={4200} position="top-center" />
+        <Toaster richColors closeButton duration={4200} position="bottom-right" theme="system" />
       </CartProvider>
     </SessionProvider>
   )

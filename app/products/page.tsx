@@ -1,16 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useCart } from '@/context/cart-context'
-import { Product, Category } from '@prisma/client'
-import { ShoppingCart, Search, SlidersHorizontal } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
+import type { Category, Product } from '@prisma/client'
+import { ArrowUpDown, Check, Search, SlidersHorizontal } from 'lucide-react'
 import { EmptySearch } from '@/components/empty-states'
+import { ProductCard } from '@/components/catalog/ProductCard'
 import { ProductCardSkeleton } from '@/components/catalog/ProductCardSkeleton'
+import { RevealOnScroll } from '@/components/catalog/RevealOnScroll'
 import {
   Sheet,
   SheetContent,
@@ -21,8 +19,16 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
 
-type SortOpt = 'newest' | 'price_asc' | 'price_desc'
+type SortOpt = 'newest' | 'price_asc' | 'price_desc' | 'bestsellers'
+
+const sortLabels: Record<SortOpt, string> = {
+  newest: 'Mais recentes',
+  price_asc: 'Menor preço',
+  price_desc: 'Maior preço',
+  bestsellers: 'Mais vendidos',
+}
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -35,7 +41,6 @@ export default function ProductsPage() {
   const [sort, setSort] = useState<SortOpt>('newest')
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const [debouncedSearch, setDebouncedSearch] = useState('')
-  const { dispatch } = useCart()
 
   useEffect(() => {
     const t = window.setTimeout(() => setDebouncedSearch(search.trim()), 400)
@@ -96,25 +101,13 @@ export default function ProductsPage() {
     }
   }, [page, debouncedSearch, categoryFilter, sort])
 
-  useEffect(() => {
-    //
-  }, [])
-
-  const handleAddToCart = (product: Product) => {
-    dispatch({
-      type: 'ADD_ITEM',
-      payload: { product, quantity: 1 },
-    })
-    toast.success('Adicionado ao carrinho', { description: product.name })
-  }
-
   const filterControls = (
     <div className="flex flex-col gap-4">
       <div>
-        <p className="text-sm font-medium mb-2">Categoria</p>
+        <p className="mb-2 text-sm font-medium">Categoria</p>
         <select
           aria-label="Filtrar por categoria"
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="w-full rounded-control border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           value={categoryFilter}
           onChange={(e) => {
             setCategoryFilter(e.target.value)
@@ -130,54 +123,136 @@ export default function ProductsPage() {
         </select>
       </div>
       <div>
-        <p className="text-sm font-medium mb-2">Ordenar</p>
+        <p className="mb-2 text-sm font-medium">Ordenar</p>
         <select
           aria-label="Ordenar lista"
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          className="w-full rounded-control border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           value={sort}
           onChange={(e) => {
             setSort(e.target.value as SortOpt)
             setPage(1)
           }}
         >
-          <option value="newest">Mais recentes</option>
-          <option value="price_asc">Menor preço</option>
-          <option value="price_desc">Maior preço</option>
+          {(Object.keys(sortLabels) as SortOpt[]).map((k) => (
+            <option key={k} value={k}>
+              {sortLabels[k]}
+            </option>
+          ))}
         </select>
       </div>
     </div>
   )
 
+  function CategoryPillsRow({ className }: { className?: string }) {
+    return (
+      <div className={cn('flex gap-6', className)}>
+        <div className="min-w-0 flex-1 flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+          <button
+            type="button"
+            onClick={() => {
+              setCategoryFilter('')
+              setPage(1)
+            }}
+            className={cn(
+              'flex shrink-0 items-center rounded-full border px-4 py-2 text-sm transition-colors duration-200',
+              categoryFilter === ''
+                ? 'border-primary font-medium text-primary'
+                : 'border-border bg-transparent text-muted-foreground hover:border-primary/60 hover:text-foreground'
+            )}
+          >
+            {categoryFilter === '' ? (
+              <Check className="mr-2 h-[11px] w-[11px]" strokeWidth={3} aria-hidden />
+            ) : null}
+            Todas
+          </button>
+          {categories.map((c) => {
+            const active = categoryFilter === c.id
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => {
+                  setCategoryFilter(c.id)
+                  setPage(1)
+                }}
+                className={cn(
+                  'flex shrink-0 items-center rounded-full border px-4 py-2 text-sm transition-colors duration-200',
+                  active
+                    ? 'border-primary font-medium text-primary'
+                    : 'border-border bg-transparent text-muted-foreground hover:border-primary/60 hover:text-foreground'
+                )}
+              >
+                {active ? (
+                  <Check className="mr-2 h-[11px] w-[11px]" strokeWidth={3} aria-hidden />
+                ) : null}
+                {c.name}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2 pb-2">
+          <ArrowUpDown className="h-4 w-4 shrink-0 text-muted-foreground sm:inline-block" aria-hidden />
+          <label className="sr-only" htmlFor="sort-inline">
+            Ordenar produtos
+          </label>
+          <select
+            id="sort-inline"
+            aria-label="Ordenar produtos"
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value as SortOpt)
+              setPage(1)
+            }}
+            className="rounded-full border border-transparent bg-transparent py-2 pr-8 pl-0 text-sm font-medium text-muted-foreground underline-offset-4 transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {(Object.keys(sortLabels) as SortOpt[]).map((k) => (
+              <option key={k} value={k}>
+                {sortLabels[k]}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="mb-10 flex flex-wrap items-start justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Produtos</h1>
-          <p className="text-muted-foreground text-sm max-w-xl">
-            Filtros e ordenação ficam sempre visíveis no desktop e no ícone em telas pequenas.
+          <h1 className="text-xl font-semibold lg:text-xl">Produtos</h1>
+          <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+            Filtre por categoria ou busque pelo nome — no desktop há painel lateral; no mobile use
+            o ícone para mais opções.
           </p>
         </div>
 
-        <div className="relative flex flex-1 min-w-[280px] max-w-md gap-2">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <div className="relative flex min-w-[260px] max-w-lg flex-1 gap-2">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar na loja..."
+            placeholder="Buscar na loja…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 flex-1"
+            className="rounded-control flex-1 pl-10 transition-colors duration-200"
             aria-label="Buscar produtos"
           />
           {search ? (
-            <Button type="button" variant="outline" onClick={() => setSearch('')}>
+            <Button
+              type="button"
+              variant="outline"
+              className="shrink-0 rounded-control transition-colors duration-200"
+              onClick={() => setSearch('')}
+            >
               Limpar
             </Button>
           ) : null}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="hidden lg:block space-y-6">
-          <h2 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground">
+      <div className="grid gap-12 lg:grid-cols-[220px,minmax(0,1fr)]">
+        <aside className="hidden space-y-6 lg:block">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
             Filtrar
           </h2>
           {filterControls}
@@ -185,7 +260,7 @@ export default function ProductsPage() {
             variant="ghost"
             size="sm"
             type="button"
-            className="text-primary px-0"
+            className="mt-4 px-0 text-primary underline-offset-4 transition-colors duration-200 hover:underline"
             onClick={() => {
               setCategoryFilter('')
               setSort('newest')
@@ -197,28 +272,32 @@ export default function ProductsPage() {
           </Button>
         </aside>
 
-        <div className="lg:col-span-3">
-          <div className="flex justify-end lg:hidden mb-4">
+        <div className="min-w-0">
+          <div className="mb-10 lg:hidden">
+            <CategoryPillsRow />
+          </div>
+
+          <div className="mb-8 flex justify-end lg:hidden">
             <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
               <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" type="button" className="gap-2 rounded-control">
                   <SlidersHorizontal className="h-4 w-4" />
                   Filtros
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="bottom"
-                className="rounded-t-2xl p-6 pb-10 overflow-y-auto"
+                className="max-h-[85vh] overflow-y-auto rounded-t-2xl p-6 pb-10"
                 aria-describedby={undefined}
               >
-                <SheetTitle className="text-lg font-semibold mb-2">Filtros</SheetTitle>
-                <SheetDescription className="text-sm text-muted-foreground mb-4">
+                <SheetTitle className="mb-3 text-xl font-semibold">Filtros</SheetTitle>
+                <SheetDescription className="mb-6 text-sm text-muted-foreground">
                   Ajuste categoria e ordenação.
                 </SheetDescription>
                 {filterControls}
-                <SheetFooter className="mt-6 gap-2 sm:flex-row">
+                <SheetFooter className="mt-8 gap-2 sm:flex-row">
                   <SheetClose asChild>
-                    <Button className="flex-1" type="button">
+                    <Button className="flex-1 rounded-control" type="button">
                       Fechar
                     </Button>
                   </SheetClose>
@@ -228,90 +307,19 @@ export default function ProductsPage() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-6">
               {[...Array(8)].map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-6">
                 {products && products.length > 0 ? (
-                  products.map((product) => (
-                    <Card
-                      key={product.id}
-                      className="group relative overflow-hidden border-border/70 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-primary/20"
-                    >
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="block overflow-hidden rounded-t-xl"
-                      >
-                        <div className="relative h-52 overflow-hidden">
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                        </div>
-                      </Link>
-                      <CardContent className="relative p-4 space-y-3">
-                        <Link href={`/products/${product.id}`}>
-                          <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                            {product.name}
-                          </h3>
-                        </Link>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {product.description}
-                        </p>
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-xl font-bold text-primary tabular-nums">
-                            R$ {product.price.toFixed(2)}
-                          </span>
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">
-                            Est. {product.stock}
-                          </span>
-                        </div>
-
-                        <div className="pointer-events-none absolute bottom-24 left-4 right-4 translate-y-[140%] transition-transform duration-300 group-hover:translate-y-0 group-hover:pointer-events-auto opacity-0 group-hover:opacity-100">
-                          <Button
-                            size="sm"
-                            type="button"
-                            className="w-full shadow-md pointer-events-auto"
-                            disabled={product.stock === 0}
-                            onClick={() => handleAddToCart(product)}
-                          >
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            Adicionar
-                          </Button>
-                        </div>
-
-                        <div className="flex gap-2 pt-2 relative z-[1]">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            type="button"
-                            className="flex-1 bg-background/95"
-                            disabled={product.stock === 0}
-                            onClick={() => handleAddToCart(product)}
-                          >
-                            <ShoppingCart className="mr-1 h-4 w-4" />
-                            Carrinho
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            type="button"
-                            asChild
-                            className="flex-1"
-                          >
-                            <Link href={`/products/${product.id}`}>Detalhes</Link>
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  products.map((product, i) => (
+                    <RevealOnScroll key={product.id}>
+                      <ProductCard product={product} priority={page === 1 && i < 3} />
+                    </RevealOnScroll>
                   ))
                 ) : (
                   <EmptySearch />
@@ -319,10 +327,11 @@ export default function ProductsPage() {
               </div>
 
               {totalPages > 1 ? (
-                <div className="flex justify-center mt-10 gap-2 flex-wrap">
+                <div className="mt-12 flex flex-wrap justify-center gap-2">
                   <Button
                     variant="outline"
                     type="button"
+                    className="rounded-control transition-colors duration-200"
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >
@@ -334,6 +343,7 @@ export default function ProductsPage() {
                   <Button
                     variant="outline"
                     type="button"
+                    className="rounded-control transition-colors duration-200"
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                   >

@@ -22,9 +22,11 @@ export default function NewProductPage() {
     name: '',
     description: '',
     price: '',
+    compareAtPrice: '',
     image: '',
     stock: '',
     featured: false,
+    exclusive: false,
     categoryId: '',
   })
 
@@ -88,7 +90,18 @@ export default function NewProductPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          price: Number(formData.price),
+          compareAtPrice:
+            formData.compareAtPrice.trim() === '' ? undefined : Number(formData.compareAtPrice),
+          image: formData.image,
+          stock: Number(formData.stock),
+          featured: formData.featured,
+          exclusive: formData.exclusive,
+          categoryId: formData.categoryId,
+        }),
       })
 
       const data = await response.json().catch(() => ({}))
@@ -191,6 +204,20 @@ export default function NewProductPage() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="compareAtPrice">Preço “de” (opcional, maior que o preço de venda)</Label>
+                <Input
+                  id="compareAtPrice"
+                  name="compareAtPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.compareAtPrice}
+                  onChange={handleChange}
+                  placeholder="Ex.: 99,90"
+                />
+              </div>
+
               <div className="space-y-3">
                 <Label htmlFor="image">URL da imagem</Label>
                 <Input
@@ -243,6 +270,18 @@ export default function NewProductPage() {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="exclusive"
+                  name="exclusive"
+                  checked={formData.exclusive}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-input text-primary accent-primary"
+                />
+                <Label htmlFor="exclusive">Produto exclusivo (badge roxa)</Label>
               </div>
 
               <div className="flex items-center space-x-2">

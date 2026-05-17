@@ -1,82 +1,64 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { ShoppingBag, Star, Truck, Shield } from 'lucide-react'
+import { ShoppingBag, Shield } from 'lucide-react'
+
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1400&q=82'
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-primary-light text-primary-foreground">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-30"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 20%, white 0%, transparent 45%), radial-gradient(circle at 80% 60%, white 0%, transparent 40%)',
-        }}
-        aria-hidden
-      />
-      <div className="container relative mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary-foreground/80 mb-4">
-            E-commerce profissional
+    <section className="border-b border-border/70 bg-background">
+      <div className="relative h-[260px] w-full md:h-[360px]">
+        <Image
+          src={HERO_IMAGE}
+          alt="Ambiente editorial da coleção atual em destaque na loja ShopMy"
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-transparent" />
+      </div>
+
+      <div className="section-y border-t border-transparent pb-14 pt-10 md:py-16">
+        <div className="container mx-auto max-w-3xl px-4 text-center">
+          <p
+            className="mb-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+            style={{ lineHeight: 1.2 }}
+          >
+            Nova coleção · Outono · Frete econômico em pedidos combinados
           </p>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance">
-            Tudo o que você precisa, com{' '}
-            <span className="text-white drop-shadow-sm">checkout seguro</span>
+
+          <h1 className="text-balance text-xl font-semibold leading-tight text-foreground md:text-xl">
+            Peças selecionadas para o seu guarda-roupa do dia a dia — com checkout seguro
           </h1>
-          <p className="text-lg md:text-xl mb-10 text-primary-foreground/90 max-w-2xl mx-auto text-balance">
-            Catálogo completo, pagamentos com Stripe e entrega que você confia. Comece a comprar
-            agora.
+
+          <p className="mt-3 max-w-xl mx-auto text-sm text-muted-foreground line-clamp-2 md:line-clamp-none">
+            Curadoria de produtos, pagamento Stripe e navegação pensada para mobile.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
             <Button
               size="lg"
-              className="bg-white text-primary hover:bg-white/90 shadow-lg font-semibold"
+              className="rounded-control gap-2 bg-foreground px-10 font-semibold text-background hover:bg-foreground/90"
               asChild
             >
               <Link href="/products">
-                <ShoppingBag className="mr-2 h-5 w-5" />
+                <ShoppingBag className="h-5 w-5" aria-hidden />
                 Comprar agora
               </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white/80 text-white hover:bg-white/15 hover:text-white"
-              asChild
-            >
+            <Button size="lg" variant="outline" className="rounded-control px-10 font-semibold" asChild>
               <Link href="/categories">Explorar categorias</Link>
             </Button>
           </div>
-        </div>
-      </div>
 
-      <div className="container relative mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div className="text-center rounded-xl bg-white/10 backdrop-blur-sm p-6 border border-white/10">
-            <div className="bg-white/20 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4">
-              <Star className="h-7 w-7 text-amber-200" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Curadoria</h3>
-            <p className="text-sm text-primary-foreground/85">
-              Produtos selecionados com critério de qualidade
-            </p>
-          </div>
-          <div className="text-center rounded-xl bg-white/10 backdrop-blur-sm p-6 border border-white/10">
-            <div className="bg-white/20 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4">
-              <Truck className="h-7 w-7 text-emerald-200" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Entrega</h3>
-            <p className="text-sm text-primary-foreground/85">
-              Logística pensada para chegar no prazo
-            </p>
-          </div>
-          <div className="text-center rounded-xl bg-white/10 backdrop-blur-sm p-6 border border-white/10">
-            <div className="bg-white/20 rounded-full w-14 h-14 flex items-center justify-center mx-auto mb-4">
-              <Shield className="h-7 w-7 text-white" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Pagamento seguro</h3>
-            <p className="text-sm text-primary-foreground/85">
-              Criptografia e processamento Stripe
-            </p>
+          <div className="mt-14 flex justify-center gap-10 text-muted-foreground">
+            <span className="inline-flex items-center gap-2 text-xs">
+              <Shield className="h-4 w-4 text-primary" aria-hidden /> Pagamentos com Stripe
+            </span>
+            <span className="hidden text-xs sm:inline">Suporte rápido em horário comercial</span>
           </div>
         </div>
       </div>

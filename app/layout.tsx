@@ -27,15 +27,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
       </head>
-      <body className={`${plusJakarta.className} ${plusJakarta.variable}`}>
+      <body className={`${plusJakarta.className} ${plusJakarta.variable}`} suppressHydrationWarning>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){try{var k="shopmy-theme",t=localStorage.getItem(k);var r=document.documentElement;if(!t){r.classList.remove("dark");return;}if(t==="dark"){r.classList.add("dark")}else{r.classList.remove("dark")}}catch(_){}})();',
+          }}
+        />
         <Providers>
-          <div className="min-h-screen flex flex-col">
+          <div className="flex min-h-screen flex-col bg-background">
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />

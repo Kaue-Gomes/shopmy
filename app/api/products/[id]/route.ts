@@ -40,6 +40,27 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       )
     }
 
+    const existing = await prisma.product.findUnique({ where: { id: params.id } })
+    if (!existing) {
+      return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 })
+    }
+
+    const mergedPrice =
+      parsed.data.price !== undefined && parsed.data.price !== null ? parsed.data.price : existing.price
+    const mergedCompareRaw =
+      parsed.data.compareAtPrice !== undefined ? parsed.data.compareAtPrice : existing.compareAtPrice
+    if (
+      mergedCompareRaw !== null &&
+      mergedCompareRaw !== undefined &&
+      typeof mergedCompareRaw === 'number' &&
+      mergedCompareRaw <= mergedPrice
+    ) {
+      return NextResponse.json(
+        { error: 'O preço anterior deve ser maior que o preço de venda' },
+        { status: 400 }
+      )
+    }
+
     const product = await prisma.product.update({
       where: { id: params.id },
       data: parsed.data as Prisma.ProductUpdateInput,

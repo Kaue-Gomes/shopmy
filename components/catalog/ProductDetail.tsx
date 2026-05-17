@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { useCart } from '@/context/cart-context'
-import { ShoppingCart, Star, ZoomIn } from 'lucide-react'
+import { ShoppingCart, Star, ZoomIn, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { emitCartIconPulse } from '@/lib/cart-events'
 
 type ProductWithCategory = Product & { category: Category | null }
 
@@ -23,17 +24,31 @@ export default function ProductDetail({
 }) {
   const { dispatch } = useCart()
   const [quantity, setQuantity] = useState(1)
+  const [adding, setAdding] = useState(false)
+  const [iconPulse, setIconPulse] = useState(false)
   const [activeImage, setActiveImage] = useState(product.image)
   const gallery = Array.from(new Set([product.image].filter(Boolean)))
   const [zoomOpen, setZoomOpen] = useState(false)
 
   const handleAddToCart = () => {
-    dispatch({
-      type: 'ADD_ITEM',
-      payload: { product, quantity },
-    })
-    toast.success('Produto adicionado', { description: product.name })
+    if (product.stock <= 0 || adding) return
+    setAdding(true)
+    Promise.resolve()
+      .then(() => {
+        dispatch({
+          type: 'ADD_ITEM',
+          payload: { product, quantity },
+        })
+        toast.success('Produto adicionado', { description: product.name })
+        emitCartIconPulse()
+        setIconPulse(true)
+        window.setTimeout(() => setIconPulse(false), 620)
+      })
+      .finally(() => setAdding(false))
   }
+
+  const cmp = product.compareAtPrice
+  const hasStrike = cmp != null && cmp > product.price + 1e-6
 
   return (
     <div className="space-y-10">
@@ -71,7 +86,7 @@ export default function ProductDetail({
                     : 'ring-transparent opacity-80 hover:opacity-100'
                 )}
               >
-                <Image src={url} alt="" fill sizes="64px" className="object-cover" />
+                <Image src={url} alt={`Miniatura · ${product.name}`} fill sizes="64px" className="object-cover" />
               </button>
             ))}
           </div>
@@ -85,12 +100,15 @@ export default function ProductDetail({
                 Destaque
               </div>
             ) : null}
-            <h1 className="text-3xl font-bold tracking-tight text-balance md:text-4xl">
-              {product.name}
-            </h1>
-            <p className="mt-3 text-3xl font-bold text-primary md:text-4xl tabular-nums">
-              R$ {product.price.toFixed(2)}
-            </p>
+            <h1 className="text-balance text-xl font-semibold tracking-tight">{product.name}</h1>
+            <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 tabular-nums">
+              <p className="text-xl font-bold text-primary">{`R$ ${product.price.toFixed(2)}`}</p>
+              {hasStrike ? (
+                <p className="text-sm text-muted-foreground line-through transition-colors duration-200">
+                  {`R$ ${cmp.toFixed(2)}`}
+                </p>
+              ) : null}
+            </div>
           </div>
 
           <div>
@@ -112,8 +130,11 @@ export default function ProductDetail({
                   <Button
                     variant="outline"
                     size="icon"
+                    type="button"
+                    className="h-11 w-11 rounded-control"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                     disabled={quantity <= 1}
+                    aria-label="Diminuir quantidade"
                   >
                     −
                   </Button>
@@ -121,8 +142,11 @@ export default function ProductDetail({
                   <Button
                     variant="outline"
                     size="icon"
+                    type="button"
+                    className="h-11 w-11 rounded-control"
                     onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
                     disabled={quantity >= product.stock || product.stock === 0}
+                    aria-label="Aumentar quantidade"
                   >
                     +
                   </Button>
@@ -131,12 +155,25 @@ export default function ProductDetail({
 
               <Button
                 size="lg"
-                className="w-full shadow-md hover:shadow-lg transition-shadow"
+                type="button"
+                className="w-full rounded-control bg-foreground font-semibold text-background shadow-md transition-colors duration-200 hover:bg-foreground/90 hover:shadow-lg"
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
+                disabled={product.stock === 0 || adding}
               >
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                {product.stock === 0 ? 'Indisponível' : 'Adicionar ao carrinho'}
+                {adding ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden />
+                    Adicionando…
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart
+                      className={cn('mr-2 h-5 w-5 transition-transform duration-200', iconPulse && 'animate-cart-icon-pulse')}
+                      aria-hidden
+                    />
+                    {product.stock === 0 ? 'Indisponível' : 'Adicionar ao carrinho'}
+                  </>
+                )}
               </Button>
 
               {product.stock === 0 ? (

@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useCart } from '@/context/cart-context'
 import { Product, Category } from '@prisma/client'
-import { ShoppingCart, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { CatalogBreadcrumbs } from '@/components/catalog/Breadcrumbs'
+import { ProductCard } from '@/components/catalog/ProductCard'
+import { ProductCardSkeleton } from '@/components/catalog/ProductCardSkeleton'
+import { RevealOnScroll } from '@/components/catalog/RevealOnScroll'
 
 interface ProductWithCategory extends Product {
   category: Category
@@ -20,7 +22,6 @@ export default function CategoryDetailPage() {
   const [category, setCategory] = useState<Category | null>(null)
   const [products, setProducts] = useState<ProductWithCategory[]>([])
   const [loading, setLoading] = useState(true)
-  const { dispatch } = useCart()
 
   const fetchCategoryAndProducts = useCallback(async () => {
     try {
@@ -50,33 +51,16 @@ export default function CategoryDetailPage() {
     void fetchCategoryAndProducts()
   }, [categoryId, fetchCategoryAndProducts])
 
-  const handleAddToCart = (product: Product) => {
-    try {
-      dispatch({
-        type: 'ADD_ITEM',
-        payload: { product, quantity: 1 },
-      })
-    } catch (error) {
-      console.error('Erro ao adicionar ao carrinho:', error)
-    }
-  }
-
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+      <div className="container mx-auto px-4 py-8 md:py-12">
+        <div className="mb-10">
+          <div className="h-8 w-1/3 max-w-[220px] animate-pulse rounded bg-muted" />
+          <div className="mt-3 h-4 w-2/5 max-w-md animate-pulse rounded bg-muted" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-6">
           {[...Array(8)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <div className="h-48 bg-gray-200 rounded-t-lg"></div>
-              <CardContent className="p-4">
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              </CardContent>
-            </Card>
+            <ProductCardSkeleton key={i} />
           ))}
         </div>
       </div>
@@ -85,103 +69,78 @@ export default function CategoryDetailPage() {
 
   if (!category) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Categoria não encontrada</h1>
-          <p className="text-gray-600 mb-6">A categoria que você está procurando não existe.</p>
-          <Link href="/categories">
-            <Button>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar às Categorias
-            </Button>
-          </Link>
+      <div className="container mx-auto px-4 py-12 md:py-16">
+        <div className="mx-auto max-w-lg space-y-4 text-center">
+          <h1 className="text-xl font-semibold">Categoria não encontrada</h1>
+          <p className="text-sm text-muted-foreground">
+            A categoria que você está procurando não existe ou foi removida.
+          </p>
+          <Button asChild className="rounded-control">
+            <Link href="/categories">
+              <ArrowLeft className="mr-2 h-4 w-4" aria-hidden />
+              Voltar às categorias
+            </Link>
+          </Button>
         </div>
       </div>
     )
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <Link
-          href="/categories"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar às Categorias
-        </Link>
+  const crumbs = [
+    { label: 'Início', href: '/' },
+    { label: 'Categorias', href: '/categories' },
+    { label: category.name, href: `/categories/${category.id}` },
+  ]
 
-        <div className="flex items-center gap-6">
-          {category.image && (
-            <div className="relative w-24 h-24 rounded-lg overflow-hidden">
-              <Image
-                src={category.image}
-                alt={category.name}
-                fill
-                sizes="96px"
-                className="object-cover"
-              />
-            </div>
-          )}
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{category.name}</h1>
-            <p className="text-gray-600">{category.description}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              {products.length} produto{products.length !== 1 ? 's' : ''} encontrado
-              {products.length !== 1 ? 's' : ''}
-            </p>
+  return (
+    <div className="container mx-auto px-4 py-8 md:py-12">
+      <CatalogBreadcrumbs items={crumbs} />
+
+      <Link
+        href="/categories"
+        className="-mt-2 mb-6 inline-flex items-center text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" aria-hidden />
+        Voltar às categorias
+      </Link>
+
+      <header className="mb-12 flex flex-col gap-8 sm:flex-row sm:items-center">
+        {category.image ? (
+          <div className="relative h-28 w-full max-w-[7rem] shrink-0 overflow-hidden rounded-shell bg-muted shadow-sm ring-1 ring-border/60">
+            <Image src={category.image} alt={category.name} fill sizes="112px" className="object-cover" />
           </div>
+        ) : null}
+
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold tracking-tight text-balance md:text-xl">
+            {category.name}
+          </h1>
+          {category.description ? (
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{category.description}</p>
+          ) : null}
+          <p className="mt-4 text-xs text-muted-foreground">
+            {products.length}{' '}
+            {products.length === 1 ? 'produto nesta lista' : 'produtos nesta lista'}
+          </p>
         </div>
-      </div>
+      </header>
 
       {products && products.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <Card key={product.id} className="group hover:shadow-lg transition-shadow">
-              <div className="relative h-48 overflow-hidden rounded-t-lg">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xl font-bold text-green-600">
-                    R$ {product.price.toFixed(2)}
-                  </span>
-                  <span className="text-sm text-gray-500">Estoque: {product.stock}</span>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleAddToCart(product)}
-                    className="flex-1"
-                    disabled={product.stock === 0}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-1" />
-                    Adicionar
-                  </Button>
-                  <Link href={`/products/${product.id}`}>
-                    <Button variant="outline" size="sm">
-                      Ver
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 lg:gap-6">
+          {products.map((product, idx) => (
+            <RevealOnScroll key={product.id}>
+              <ProductCard product={product} priority={idx < 2} showQuickView />
+            </RevealOnScroll>
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Nenhum produto encontrado nesta categoria.</p>
-          <Link href="/products" className="mt-4 inline-block">
-            <Button>Ver Todos os Produtos</Button>
-          </Link>
+        <div className="rounded-shell border bg-surface px-8 py-16 text-center text-sm text-muted-foreground">
+          Nenhum produto nesta categoria ainda.
+          <div className="mt-8">
+            <Button asChild className="rounded-control">
+              <Link href="/products">Ver todos os produtos</Link>
+            </Button>
+          </div>
         </div>
       )}
     </div>

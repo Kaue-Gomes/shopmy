@@ -24,7 +24,7 @@ const SheetOverlay = React.forwardRef<
 ))
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName
 
-type SheetSide = 'right' | 'bottom'
+type SheetSide = 'left' | 'right' | 'bottom'
 
 type SheetContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
   side?: SheetSide
@@ -41,6 +41,13 @@ const SheetContent = React.forwardRef<
       className={cn(
         'fixed z-[60] bg-background shadow-lg outline-none duration-300',
         'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in transition',
+        side === 'left' &&
+          cn(
+            'flex h-full w-full max-w-md flex-col border-r',
+            'inset-y-0 left-0',
+            'data-[state=open]:animate-slide-in-from-left',
+            'data-[state=closed]:animate-slide-out-to-left'
+          ),
         side === 'right' &&
           cn(
             'flex h-full w-full max-w-md flex-col border-l',

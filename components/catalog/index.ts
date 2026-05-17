@@ -1,3 +1,5 @@
 export { default as ProductDetail } from './ProductDetail'
 export { CatalogBreadcrumbs } from './Breadcrumbs'
 export { ProductCardSkeleton } from './ProductCardSkeleton'
+export { ProductCard } from './ProductCard'
+export { RevealOnScroll } from './RevealOnScroll'

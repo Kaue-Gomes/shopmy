@@ -36,20 +36,23 @@ export function CatalogBreadcrumbs({ items }: { items: Crumb[] }) {
             return (
               <li key={`${item.href}-${i}`} className="flex items-center gap-2">
                 {last ? (
-                  <span className="font-medium text-foreground max-w-[12rem] sm:max-w-xl truncate">
+                  <span
+                    className="max-w-[12rem] truncate font-medium text-foreground sm:max-w-xl"
+                    aria-current="page"
+                  >
                     {item.label}
                   </span>
                 ) : (
                   <Link
                     href={item.href}
-                    className="hover:text-primary transition-colors truncate max-w-[10rem]"
+                    className="max-w-[10rem] truncate transition-colors duration-200 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     {item.label}
                   </Link>
                 )}
                 {!last ? (
                   <span className="text-muted-foreground/60" aria-hidden>
-                    /
+                    &gt;
                   </span>
                 ) : null}
               </li>

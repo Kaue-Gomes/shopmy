@@ -10,7 +10,8 @@ function orderFromSort(sort?: string): Prisma.ProductOrderByWithRelationInput[] 
       return [{ price: 'asc' }]
     case 'price_desc':
       return [{ price: 'desc' }]
-    case 'newest':
+    case 'bestsellers':
+      return [{ featured: 'desc' }, { stock: 'desc' }]
     default:
       return [{ createdAt: 'desc' }]
   }
@@ -43,10 +44,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-      ]
+      where.OR = [{ name: { contains: search } }, { description: { contains: search } }]
     }
 
     const orderBy = orderFromSort(sort)
@@ -102,9 +100,11 @@ export async function POST(request: NextRequest) {
         name: data.name,
         description: data.description,
         price: data.price,
+        compareAtPrice: data.compareAtPrice ?? undefined,
         image: data.image,
         stock: data.stock,
         featured: data.featured,
+        exclusive: data.exclusive,
         categoryId: data.categoryId,
       },
       include: {

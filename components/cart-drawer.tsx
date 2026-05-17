@@ -38,9 +38,13 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         if (!open) onClose()
       }}
     >
-      <SheetContent className="p-0 bg-background" side="right" aria-describedby={undefined}>
+      <SheetContent
+        side="right"
+        aria-describedby={undefined}
+        className="flex max-h-none w-[100vw] max-w-none flex-col border-border bg-background p-0 shadow-xl sm:!max-w-[400px]"
+      >
         <SheetTitle className="sr-only">Carrinho de compras</SheetTitle>
-        <div className="flex h-full flex-col border-b bg-muted/40">
+        <div className="flex h-full flex-col bg-muted/40">
           <div className="flex items-center justify-between p-4 border-b bg-background">
             <h2 className="text-lg font-semibold flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-primary" aria-hidden />
@@ -81,7 +85,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-7 w-7"
+                              className="h-11 w-11 min-h-11 min-w-11 rounded-control shrink-0"
                               onClick={() =>
                                 handleUpdateQuantity(item.product.id, item.quantity - 1)
                               }
@@ -95,7 +99,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="h-7 w-7"
+                              className="h-11 w-11 min-h-11 min-w-11 rounded-control shrink-0"
                               onClick={() =>
                                 handleUpdateQuantity(item.product.id, item.quantity + 1)
                               }
@@ -106,7 +110,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 text-destructive ml-auto"
+                              className="ml-auto h-11 w-11 min-h-11 min-w-11 rounded-control shrink-0 text-destructive"
                               onClick={() => handleRemoveItem(item.product.id)}
                               aria-label="Remover item"
                             >
@@ -129,16 +133,16 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <span className="text-primary">R$ {state.total.toFixed(2)}</span>
               </div>
               <div className="space-y-2">
-                <Link href="/checkout" className="block">
-                  <Button className="w-full" onClick={onClose}>
-                    {session ? 'Finalizar compra' : 'Finalizar como convidado'}
-                  </Button>
-                </Link>
-                <Button variant="outline" className="w-full" asChild>
+                <Button variant="outline" className="w-full rounded-control transition-colors duration-200" asChild>
                   <Link href="/products" onClick={onClose}>
                     Continuar comprando
                   </Link>
                 </Button>
+                <Link href="/checkout" className="block">
+                  <Button className="w-full rounded-control" onClick={onClose}>
+                    {session ? 'Finalizar compra' : 'Finalizar como convidado'}
+                  </Button>
+                </Link>
               </div>
             </div>
           )}

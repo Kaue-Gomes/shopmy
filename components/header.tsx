@@ -1,105 +1,260 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 import { useSession, signOut } from 'next-auth/react'
-import { ShoppingCart, User, LogOut } from 'lucide-react'
+import {
+  ShoppingCart,
+  User,
+  LogOut,
+  Menu,
+  LogIn,
+  X,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { CartDrawer } from '@/components/cart-drawer'
-import { useState } from 'react'
 import { Logo } from '@/components/logo'
 import { HeaderSearch, HeaderSearchMobileIcon } from '@/components/header-search'
+import { ThemeToggle } from '@/components/theme-toggle'
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+  SheetClose,
+  SheetFooter,
+} from '@/components/ui/sheet'
+import { cn } from '@/lib/utils'
+import { PULSE_EVENT } from '@/lib/cart-events'
+
+function useCartIconBump() {
+  const [pulse, setPulse] = React.useState(false)
+  React.useEffect(() => {
+    const bump = () => {
+      setPulse(true)
+      window.setTimeout(() => setPulse(false), 620)
+    }
+    window.addEventListener(PULSE_EVENT, bump)
+    return () => window.removeEventListener(PULSE_EVENT, bump)
+  }, [])
+  return pulse
+}
+
+function DesktopNavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const pathname = usePathname()
+  const active =
+    href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
+
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'relative flex h-16 shrink-0 items-center border-b-2 border-transparent px-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        active && 'border-primary text-primary font-semibold'
+      )}
+    >
+      {children}
+    </Link>
+  )
+}
+
+function MobileDrawerLink({
+  href,
+  children,
+  onNavigate,
+}: {
+  href: string
+  children: React.ReactNode
+  onNavigate?: () => void
+}) {
+  const pathname = usePathname()
+  const active =
+    href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`)
+
+  return (
+    <Link
+      href={href}
+      onClick={() => onNavigate?.()}
+      className={cn(
+        'block rounded-lg px-4 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        active && 'bg-muted/70 text-primary'
+      )}
+    >
+      {children}
+    </Link>
+  )
+}
 
 export function Header() {
   const { data: session } = useSession()
   const { state } = useCart()
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [cartOpen, setCartOpen] = React.useState(false)
+  const [mobileOpen, setMobileOpen] = React.useState(false)
+  const pathname = usePathname()
+  const cartPulse = useCartIconBump()
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 h-16 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70">
       <div className="container flex h-16 items-center justify-between gap-2">
-        <Logo />
+        <div className="flex min-w-0 flex-1 items-center gap-2 lg:gap-6">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                className="h-11 w-11 shrink-0 lg:hidden rounded-control"
+                aria-label="Abrir menu"
+              >
+                <Menu className="h-6 w-6" aria-hidden />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="left"
+              aria-describedby={undefined}
+              className="relative w-[min(100%,288px)] p-0"
+            >
+              <SheetClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  className="absolute right-3 top-3 z-[1] rounded-full"
+                  aria-label="Fechar menu"
+                >
+                  <X className="h-5 w-5" aria-hidden />
+                </Button>
+              </SheetClose>
+              <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
+              <nav
+                aria-label="Principal mobile"
+                className="flex flex-col gap-1 border-b px-4 pb-8 pt-[3.75rem]"
+              >
+                <MobileDrawerLink href="/" onNavigate={() => setMobileOpen(false)}>
+                  Início
+                </MobileDrawerLink>
+                <MobileDrawerLink href="/products" onNavigate={() => setMobileOpen(false)}>
+                  Produtos
+                </MobileDrawerLink>
+                <MobileDrawerLink href="/categories" onNavigate={() => setMobileOpen(false)}>
+                  Categorias
+                </MobileDrawerLink>
+                {session ? (
+                  <>
+                    <MobileDrawerLink href="/orders" onNavigate={() => setMobileOpen(false)}>
+                      Pedidos
+                    </MobileDrawerLink>
+                    {session.user.role === 'ADMIN' ? (
+                      <MobileDrawerLink href="/admin" onNavigate={() => setMobileOpen(false)}>
+                        Admin
+                      </MobileDrawerLink>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <MobileDrawerLink href="/auth/signin" onNavigate={() => setMobileOpen(false)}>
+                      Entrar
+                    </MobileDrawerLink>
+                    <MobileDrawerLink href="/auth/signup" onNavigate={() => setMobileOpen(false)}>
+                      Cadastrar
+                    </MobileDrawerLink>
+                  </>
+                )}
+              </nav>
+              <SheetFooter className="p-6 mt-auto gap-4">
+                <ThemeToggle />
+                {session ? (
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full rounded-control"
+                    onClick={() => signOut()}
+                  >
+                    Sair
+                  </Button>
+                ) : null}
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
+          <Logo />
+
+          <nav
+            aria-label="Principal desktop"
+            className="mx-6 hidden h-full lg:flex lg:items-stretch lg:gap-x-2 xl:gap-x-3"
+          >
+            <DesktopNavLink href="/">Início</DesktopNavLink>
+            <DesktopNavLink href="/products">Produtos</DesktopNavLink>
+            <DesktopNavLink href="/categories">Categorias</DesktopNavLink>
+            {session ? <DesktopNavLink href="/orders">Pedidos</DesktopNavLink> : null}
+            {session?.user.role === 'ADMIN' ? <DesktopNavLink href="/admin">Admin</DesktopNavLink> : null}
+          </nav>
+        </div>
 
         <HeaderSearch />
 
-        <HeaderSearchMobileIcon />
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3">
+          <HeaderSearchMobileIcon />
+          <ThemeToggle />
 
-        <nav className="hidden lg:flex items-center gap-6 shrink-0">
-          <Link href="/" className="text-sm font-medium text-muted-foreground hover:text-primary">
-            Início
-          </Link>
-          <Link
-            href="/products"
-            className="text-sm font-medium text-muted-foreground hover:text-primary"
-          >
-            Produtos
-          </Link>
-          <Link
-            href="/categories"
-            className="text-sm font-medium text-muted-foreground hover:text-primary"
-          >
-            Categorias
-          </Link>
-          {session ? (
-            <Link
-              href="/orders"
-              className="text-sm font-medium text-muted-foreground hover:text-primary"
-            >
-              Pedidos
-            </Link>
-          ) : null}
-        </nav>
-
-        <div className="flex items-center gap-2 shrink-0">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            onClick={() => setIsCartOpen(true)}
-            className="relative border-primary/20"
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="relative h-11 w-11 rounded-control border border-transparent transition-colors duration-200 hover:bg-muted hover:text-primary"
             aria-label="Abrir carrinho"
           >
-            <ShoppingCart className="h-4 w-4" />
+            <ShoppingCart
+              className={cn('h-5 w-5 transition-transform duration-200', cartPulse && 'animate-cart-icon-pulse')}
+              aria-hidden
+            />
             {state.itemCount > 0 ? (
-              <span className="absolute -top-2 -right-2 min-h-5 min-w-5 px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-5 flex items-center justify-center border-2 border-background">
-                {state.itemCount > 99 ? '99+' : state.itemCount}
-              </span>
+              <span
+                className="absolute right-[9px] top-[9px] h-[8px] w-[8px] rounded-full bg-promo shadow-sm ring-[1.5px] ring-background"
+                aria-hidden
+              />
             ) : null}
           </Button>
 
           {session ? (
             <>
-              {session.user.role === 'ADMIN' ? (
-                <Link href="/admin">
-                  <Button variant="outline" size="sm" className="hidden sm:inline-flex">
-                    Admin
-                  </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden h-11 w-11 rounded-control border border-transparent sm:inline-flex"
+                asChild
+                aria-label="Minha conta e pedidos"
+              >
+                <Link href="/orders">
+                  <User className="h-5 w-5" aria-hidden />
                 </Link>
-              ) : null}
-              <Link href="/orders" className="hidden sm:inline">
-                <Button variant="outline" size="icon" aria-label="Pedidos">
-                  <User className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Button variant="outline" size="icon" onClick={() => signOut()} aria-label="Sair">
-                <LogOut className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                className="hidden h-11 w-11 rounded-control border border-transparent md:inline-flex"
+                onClick={() => signOut()}
+                aria-label="Sair"
+              >
+                <LogOut className="h-5 w-5" aria-hidden />
               </Button>
             </>
           ) : (
-            <>
-              <Link href="/auth/signin">
-                <Button variant="outline" size="sm">
-                  Entrar
-                </Button>
+            <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0 rounded-control" asChild>
+              <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(pathname || '/')}`} aria-label="Entrar ou cadastrar">
+                <LogIn className="h-5 w-5" aria-hidden />
               </Link>
-              <Link href="/auth/signup">
-                <Button size="sm">Cadastrar</Button>
-              </Link>
-            </>
+            </Button>
           )}
+
         </div>
       </div>
 
-      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </header>
   )
 }

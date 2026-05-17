@@ -26,6 +26,15 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+    /* Tokens semânticos de catálogo (evita conflitar com accent shadcn) */
+    --surface: 210 40% 98%;
+    --surface-foreground: 222.2 84% 4.9%;
+    --promo: 356 71% 58%;
+    --promo-foreground: 0 0% 100%;
+    --star: 39 94% 55%;
+    /* Badge “exclusivo” */
+    --badge-exclusive: 260 54% 45%;
+    --badge-exclusive-fg: 0 0% 100%;
   }
 
   .dark {
@@ -50,6 +59,13 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
+    --surface: 217.2 32.6% 14%;
+    --surface-foreground: 210 40% 98%;
+    --promo: 356 65% 52%;
+    --promo-foreground: 0 0% 100%;
+    --star: 39 90% 55%;
+    --badge-exclusive: 260 45% 58%;
+    --badge-exclusive-fg: 0 0% 100%;
   }
 }
 
@@ -58,6 +74,77 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased text-base;
+  }
+
+  html {
+    scrollbar-color: hsl(var(--primary)) hsl(var(--surface));
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--surface));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border: 2px solid hsl(var(--surface));
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-dark));
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--surface));
+  }
+}
+
+@layer utilities {
+  .section-y {
+    @apply py-12 md:py-16;
+  }
+
+  .stack-title-grid {
+    @apply mb-6;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Entrada dos cards ao scroll */
+  .reveal-on-scroll-init {
+    @apply opacity-0 translate-y-4 transition-all duration-350 ease-out;
+  }
+
+  .reveal-on-scroll-visible {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Pulso rápido no ícone “carrinho” após add */
+  @keyframes cart-icon-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-cart-icon-pulse {
+    animation: cart-icon-pulse 0.6s ease;
   }
 }
