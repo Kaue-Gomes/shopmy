@@ -42,12 +42,12 @@ npm run db:seed
 
 No painel da Vercel → **Settings → Environment Variables**, configure pelo menos:
 
-| Variável | Exemplo |
-|----------|---------|
-| `DATABASE_URL` | URL do Neon com `sslmode=require` |
-| `NEXTAUTH_URL` | `https://teu-projeto.vercel.app` |
-| `NEXTAUTH_SECRET` | Gerar secret forte (ex.: gerador do NextAuth) |
-| `NEXT_PUBLIC_APP_URL` | Mesmo domínio público da app |
+| Variável              | Exemplo                                       |
+| --------------------- | --------------------------------------------- |
+| `DATABASE_URL`        | URL do Neon com `sslmode=require`             |
+| `NEXTAUTH_URL`        | `https://teu-projeto.vercel.app`              |
+| `NEXTAUTH_SECRET`     | Gerar secret forte (ex.: gerador do NextAuth) |
+| `NEXT_PUBLIC_APP_URL` | Mesmo domínio público da app                  |
 
 Depois de fazer push para o Git, a Vercel faz redeploy automaticamente. Para preparar o banco remoto pela primeira vez, use localmente `DATABASE_URL` do Neon e execute: `npx prisma generate`, `npx prisma db push`, `npm run db:seed`.
 
