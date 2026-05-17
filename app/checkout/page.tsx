@@ -5,10 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import {
-  checkoutAuthenticatedFormSchema,
-  checkoutGuestFormSchema,
-} from '@/lib/validations'
+import { checkoutAuthenticatedFormSchema, checkoutGuestFormSchema } from '@/lib/validations'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -167,7 +164,10 @@ function CheckoutFlow({
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
                   Informe seu e-mail para confirmação do pedido. Já tem conta?{' '}
-                  <Link href="/auth/signin" className="font-medium text-primary underline-offset-4 hover:underline">
+                  <Link
+                    href="/auth/signin"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
+                  >
                     Entrar
                   </Link>
                 </p>
@@ -231,9 +231,7 @@ function CheckoutFlow({
                         size="icon"
                         type="button"
                         className="h-11 w-11 min-h-11 min-w-11 rounded-control"
-                        onClick={() =>
-                          handleUpdateQuantity(item.product.id, item.quantity - 1)
-                        }
+                        onClick={() => handleUpdateQuantity(item.product.id, item.quantity - 1)}
                         aria-label="Diminuir quantidade"
                       >
                         <Minus className="h-4 w-4" />
@@ -244,9 +242,7 @@ function CheckoutFlow({
                         size="icon"
                         type="button"
                         className="h-11 w-11 min-h-11 min-w-11 rounded-control"
-                        onClick={() =>
-                          handleUpdateQuantity(item.product.id, item.quantity + 1)
-                        }
+                        onClick={() => handleUpdateQuantity(item.product.id, item.quantity + 1)}
                         aria-label="Aumentar quantidade"
                       >
                         <Plus className="h-4 w-4" />
@@ -336,6 +332,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    <CheckoutFlow key={session?.user?.id ?? 'guest'} session={session ?? null} state={state} dispatch={dispatch} />
+    <CheckoutFlow
+      key={session?.user?.id ?? 'guest'}
+      session={session ?? null}
+      state={state}
+      dispatch={dispatch}
+    />
   )
 }

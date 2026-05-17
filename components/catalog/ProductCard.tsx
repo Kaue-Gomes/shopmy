@@ -185,7 +185,10 @@ export function ProductCard({
               </>
             ) : (
               <>
-                <ShoppingCart className={cn('h-4 w-4', iconPulse && 'animate-cart-icon-pulse')} aria-hidden />
+                <ShoppingCart
+                  className={cn('h-4 w-4', iconPulse && 'animate-cart-icon-pulse')}
+                  aria-hidden
+                />
                 Adicionar ao carrinho
               </>
             )}

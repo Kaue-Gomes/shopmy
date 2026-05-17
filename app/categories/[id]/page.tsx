@@ -107,7 +107,13 @@ export default function CategoryDetailPage() {
       <header className="mb-12 flex flex-col gap-8 sm:flex-row sm:items-center">
         {category.image ? (
           <div className="relative h-28 w-full max-w-[7rem] shrink-0 overflow-hidden rounded-shell bg-muted shadow-sm ring-1 ring-border/60">
-            <Image src={category.image} alt={category.name} fill sizes="112px" className="object-cover" />
+            <Image
+              src={category.image}
+              alt={category.name}
+              fill
+              sizes="112px"
+              className="object-cover"
+            />
           </div>
         ) : null}
 

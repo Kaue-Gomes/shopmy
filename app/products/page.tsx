@@ -192,7 +192,10 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2 pb-2">
-          <ArrowUpDown className="h-4 w-4 shrink-0 text-muted-foreground sm:inline-block" aria-hidden />
+          <ArrowUpDown
+            className="h-4 w-4 shrink-0 text-muted-foreground sm:inline-block"
+            aria-hidden
+          />
           <label className="sr-only" htmlFor="sort-inline">
             Ordenar produtos
           </label>
@@ -223,8 +226,8 @@ export default function ProductsPage() {
         <div>
           <h1 className="text-xl font-semibold lg:text-xl">Produtos</h1>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Filtre por categoria ou busque pelo nome — no desktop há painel lateral; no mobile use
-            o ícone para mais opções.
+            Filtre por categoria ou busque pelo nome — no desktop há painel lateral; no mobile use o
+            ícone para mais opções.
           </p>
         </div>
 

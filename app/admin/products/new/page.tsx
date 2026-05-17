@@ -205,7 +205,9 @@ export default function NewProductPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="compareAtPrice">Preço “de” (opcional, maior que o preço de venda)</Label>
+                <Label htmlFor="compareAtPrice">
+                  Preço “de” (opcional, maior que o preço de venda)
+                </Label>
                 <Input
                   id="compareAtPrice"
                   name="compareAtPrice"

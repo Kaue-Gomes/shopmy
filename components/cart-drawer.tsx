@@ -133,7 +133,11 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <span className="text-primary">R$ {state.total.toFixed(2)}</span>
               </div>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full rounded-control transition-colors duration-200" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-control transition-colors duration-200"
+                  asChild
+                >
                   <Link href="/products" onClick={onClose}>
                     Continuar comprando
                   </Link>

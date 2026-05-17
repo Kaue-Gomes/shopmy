@@ -46,9 +46,13 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const mergedPrice =
-      parsed.data.price !== undefined && parsed.data.price !== null ? parsed.data.price : existing.price
+      parsed.data.price !== undefined && parsed.data.price !== null
+        ? parsed.data.price
+        : existing.price
     const mergedCompareRaw =
-      parsed.data.compareAtPrice !== undefined ? parsed.data.compareAtPrice : existing.compareAtPrice
+      parsed.data.compareAtPrice !== undefined
+        ? parsed.data.compareAtPrice
+        : existing.compareAtPrice
     if (
       mergedCompareRaw !== null &&
       mergedCompareRaw !== undefined &&

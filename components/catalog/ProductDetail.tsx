@@ -86,7 +86,13 @@ export default function ProductDetail({
                     : 'ring-transparent opacity-80 hover:opacity-100'
                 )}
               >
-                <Image src={url} alt={`Miniatura · ${product.name}`} fill sizes="64px" className="object-cover" />
+                <Image
+                  src={url}
+                  alt={`Miniatura · ${product.name}`}
+                  fill
+                  sizes="64px"
+                  className="object-cover"
+                />
               </button>
             ))}
           </div>
@@ -168,7 +174,10 @@ export default function ProductDetail({
                 ) : (
                   <>
                     <ShoppingCart
-                      className={cn('mr-2 h-5 w-5 transition-transform duration-200', iconPulse && 'animate-cart-icon-pulse')}
+                      className={cn(
+                        'mr-2 h-5 w-5 transition-transform duration-200',
+                        iconPulse && 'animate-cart-icon-pulse'
+                      )}
                       aria-hidden
                     />
                     {product.stock === 0 ? 'Indisponível' : 'Adicionar ao carrinho'}

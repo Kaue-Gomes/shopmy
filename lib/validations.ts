@@ -58,11 +58,14 @@ export const checkoutAuthenticatedFormSchema = z.object({
   guestName: z.string(),
 })
 
-const nullableComparePrice = z.preprocess((v) => {
-  if (v === '' || v === undefined) return undefined
-  if (v === null) return null
-  return v
-}, z.union([z.null(), z.coerce.number().positive().finite()]))
+const nullableComparePrice = z.preprocess(
+  (v) => {
+    if (v === '' || v === undefined) return undefined
+    if (v === null) return null
+    return v
+  },
+  z.union([z.null(), z.coerce.number().positive().finite()])
+)
 
 const productCreateFieldsSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -107,19 +110,19 @@ export const productCreateSchema = productCreateFieldsSchema.superRefine((data, 
 })
 
 export const productUpdateSchema = productCreateFieldsSchema.partial().superRefine((data, ctx) => {
-    if (
-      data.price !== undefined &&
-      data.compareAtPrice != null &&
-      typeof data.compareAtPrice === 'number' &&
-      data.compareAtPrice <= data.price
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'O preço anterior deve ser maior que o preço de venda',
-        path: ['compareAtPrice'],
-      })
-    }
-  })
+  if (
+    data.price !== undefined &&
+    data.compareAtPrice != null &&
+    typeof data.compareAtPrice === 'number' &&
+    data.compareAtPrice <= data.price
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'O preço anterior deve ser maior que o preço de venda',
+      path: ['compareAtPrice'],
+    })
+  }
+})
 
 export const categoryWriteSchema = z.object({
   name: z.string().trim().min(1).max(120),

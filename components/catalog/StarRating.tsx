@@ -19,14 +19,20 @@ export function StarRating({
         const full = remainder >= 1
         return (
           <span key={idx} className="relative inline-block h-3.5 w-3.5 shrink-0" aria-hidden>
-            <Star className="absolute inset-0 h-3.5 w-3.5 text-muted-foreground/50" strokeWidth={1.2} />
+            <Star
+              className="absolute inset-0 h-3.5 w-3.5 text-muted-foreground/50"
+              strokeWidth={1.2}
+            />
             {full ? (
               <Star
                 className="absolute inset-0 h-3.5 w-3.5 fill-star text-star"
                 strokeWidth={1.2}
               />
             ) : remainder > 0 ? (
-              <span className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${remainder * 100}%` }}>
+              <span
+                className="absolute inset-y-0 left-0 overflow-hidden"
+                style={{ width: `${remainder * 100}%` }}
+              >
                 <Star className="h-3.5 w-3.5 fill-star text-star" strokeWidth={1.2} />
               </span>
             ) : null}

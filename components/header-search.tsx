@@ -119,7 +119,13 @@ export function HeaderSearch() {
                       }}
                     >
                       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md ring-1 ring-border">
-                        <Image src={p.image} alt={`Foto miniatura · ${p.name}`} fill sizes="40px" className="object-cover" />
+                        <Image
+                          src={p.image}
+                          alt={`Foto miniatura · ${p.name}`}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
                       </div>
                       <span className="line-clamp-2 flex-1">{p.name}</span>
                       <span className="text-primary font-semibold whitespace-nowrap text-xs">

@@ -26,8 +26,6 @@ function LowStockBadge() {
   )
 }
 
-
-
 export function resolveBadge(kind: CatalogBadgeInfo) {
   switch (kind.kind) {
     case 'sale':

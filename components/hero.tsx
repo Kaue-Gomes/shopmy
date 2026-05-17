@@ -49,7 +49,12 @@ export function Hero() {
                 Comprar agora
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="rounded-control px-10 font-semibold" asChild>
+            <Button
+              size="lg"
+              variant="outline"
+              className="rounded-control px-10 font-semibold"
+              asChild
+            >
               <Link href="/categories">Explorar categorias</Link>
             </Button>
           </div>

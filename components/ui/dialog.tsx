@@ -56,4 +56,12 @@ DialogContent.displayName = DialogPrimitive.Content.displayName
 const DialogTitle = DialogPrimitive.Title
 const DialogDescription = DialogPrimitive.Description
 
-export { Dialog, DialogPortal, DialogTrigger, DialogClose, DialogContent, DialogTitle, DialogDescription }
+export {
+  Dialog,
+  DialogPortal,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+}

@@ -4,14 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import { useSession, signOut } from 'next-auth/react'
-import {
-  ShoppingCart,
-  User,
-  LogOut,
-  Menu,
-  LogIn,
-  X,
-} from 'lucide-react'
+import { ShoppingCart, User, LogOut, Menu, LogIn, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/context/cart-context'
 import { CartDrawer } from '@/components/cart-drawer'
@@ -189,7 +182,9 @@ export function Header() {
             <DesktopNavLink href="/products">Produtos</DesktopNavLink>
             <DesktopNavLink href="/categories">Categorias</DesktopNavLink>
             {session ? <DesktopNavLink href="/orders">Pedidos</DesktopNavLink> : null}
-            {session?.user.role === 'ADMIN' ? <DesktopNavLink href="/admin">Admin</DesktopNavLink> : null}
+            {session?.user.role === 'ADMIN' ? (
+              <DesktopNavLink href="/admin">Admin</DesktopNavLink>
+            ) : null}
           </nav>
         </div>
 
@@ -208,7 +203,10 @@ export function Header() {
             aria-label="Abrir carrinho"
           >
             <ShoppingCart
-              className={cn('h-5 w-5 transition-transform duration-200', cartPulse && 'animate-cart-icon-pulse')}
+              className={cn(
+                'h-5 w-5 transition-transform duration-200',
+                cartPulse && 'animate-cart-icon-pulse'
+              )}
               aria-hidden
             />
             {state.itemCount > 0 ? (
@@ -244,13 +242,20 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Button variant="ghost" size="icon" className="h-11 w-11 shrink-0 rounded-control" asChild>
-              <Link href={`/auth/signin?callbackUrl=${encodeURIComponent(pathname || '/')}`} aria-label="Entrar ou cadastrar">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-11 w-11 shrink-0 rounded-control"
+              asChild
+            >
+              <Link
+                href={`/auth/signin?callbackUrl=${encodeURIComponent(pathname || '/')}`}
+                aria-label="Entrar ou cadastrar"
+              >
                 <LogIn className="h-5 w-5" aria-hidden />
               </Link>
             </Button>
           )}
-
         </div>
       </div>
 
