@@ -10,7 +10,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 - **Painel Administrativo**: Dashboard para administradores
 - **Carrinho de Compras**: Sistema de carrinho persistente
 - **Autenticação**: Sistema de login com NextAuth.js
-- **Banco de Dados**: Prisma ORM com SQLite
+- **Banco de Dados**: Prisma ORM com PostgreSQL (ex.: Neon)
 - **Design Responsivo**: Interface moderna com Tailwind CSS
 
 ## Tecnologias Utilizadas
@@ -18,7 +18,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 - **Frontend**: React, Next.js 14, TypeScript
 - **Styling**: Tailwind CSS, Radix UI
 - **Backend**: Next.js API Routes
-- **Banco de Dados**: Prisma ORM, SQLite
+- **Banco de Dados**: Prisma ORM, PostgreSQL (Neon em produção)
 - **Autenticação**: NextAuth.js
 - **Pagamentos**: Stripe
 - **Deploy**: Vercel (recomendado)
@@ -29,6 +29,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 
 - Node.js 18+
 - npm ou yarn
+- **PostgreSQL** (recomendado: [Neon](https://neon.tech) gratuito) — defina `DATABASE_URL` conforme `.env.example`
 - Conta no Stripe (para pagamentos)
 
 ### Passos para Instalação
@@ -50,8 +51,8 @@ npm install
    Crie um arquivo `.env.local` na raiz do projeto:
 
 ```env
-# Database
-DATABASE_URL="file:./dev.db"
+# Database (Neon: use a connection string do painel com ?sslmode=require)
+DATABASE_URL="postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"

@@ -8,21 +8,14 @@
 npm install
 ```
 
-### 2. Configurar banco de dados
+### 2. Configurar variáveis de ambiente
 
-```bash
-npx prisma generate
-npx prisma db push
-npm run db:seed
-```
-
-### 3. Configurar variáveis de ambiente
-
-Crie o arquivo `.env.local` na raiz do projeto:
+Crie o arquivo `.env.local` na raiz do projeto (**antes** de sincronizar o schema com o servidor):
 
 ```env
-# Database
-DATABASE_URL="file:./dev.db"
+# Database — Neon (recomendado) ou Postgres local
+# Neon: postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require
+DATABASE_URL="postgresql://user:senha@localhost:5432/shopmy?schema=public"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
@@ -36,6 +29,27 @@ STRIPE_WEBHOOK_SECRET="whsec_seu_webhook_secret"
 # App
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
+
+### 3. Sincronizar o banco e popular dados de exemplo
+
+```bash
+npx prisma generate
+npx prisma db push
+npm run db:seed
+```
+
+### Produção (Vercel + Neon)
+
+No painel da Vercel → **Settings → Environment Variables**, configure pelo menos:
+
+| Variável | Exemplo |
+|----------|---------|
+| `DATABASE_URL` | URL do Neon com `sslmode=require` |
+| `NEXTAUTH_URL` | `https://teu-projeto.vercel.app` |
+| `NEXTAUTH_SECRET` | Gerar secret forte (ex.: gerador do NextAuth) |
+| `NEXT_PUBLIC_APP_URL` | Mesmo domínio público da app |
+
+Depois de fazer push para o Git, a Vercel faz redeploy automaticamente. Para preparar o banco remoto pela primeira vez, use localmente `DATABASE_URL` do Neon e execute: `npx prisma generate`, `npx prisma db push`, `npm run db:seed`.
 
 ### 4. Executar o projeto
 

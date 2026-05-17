@@ -14,8 +14,9 @@ STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
 STRIPE_SECRET_KEY=your-stripe-secret-key
 STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
 
-# Database
-DATABASE_URL="file:./dev.db"
+# Database (Neon: copie a URL do painel; em produção inclua ?sslmode=require)
+# Exemplo: postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require
+DATABASE_URL="postgresql://user:senha@localhost:5432/shopmy?schema=public"
 
 # Admin User (for demo)
 ADMIN_EMAIL=admin@shopmy.com

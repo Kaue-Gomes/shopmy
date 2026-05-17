@@ -30,8 +30,8 @@ STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
 STRIPE_SECRET_KEY=sk_test_your_secret_key_here
 STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 
-# Database
-DATABASE_URL="file:./dev.db"`
+# Database (Neon / Postgres)
+DATABASE_URL="postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require"`
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
