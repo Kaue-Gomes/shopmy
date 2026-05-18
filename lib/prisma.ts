@@ -40,5 +40,4 @@ function createPrismaClient(): PrismaClient {
   })
 }
 
-export const prisma =
-  globalForPrisma.prisma ?? (globalForPrisma.prisma = createPrismaClient())
+export const prisma = globalForPrisma.prisma ?? (globalForPrisma.prisma = createPrismaClient())
