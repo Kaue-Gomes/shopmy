@@ -29,7 +29,7 @@ Uma plataforma completa de e-commerce construída com React, Next.js e Stripe, i
 
 - Node.js 18+
 - npm ou yarn
-- **PostgreSQL** (recomendado: [Neon](https://neon.tech) gratuito) — defina `DATABASE_URL` conforme `.env.example`
+- **PostgreSQL** (recomendado: [Neon](https://neon.tech) gratuito) — defina `DATABASE_URL` e `DATABASE_URL_UNPOOLED` conforme `.env.example`
 - Conta no Stripe (para pagamentos)
 
 ### Passos para Instalação
@@ -51,8 +51,10 @@ npm install
    Crie um arquivo `.env.local` na raiz do projeto:
 
 ```env
-# Database (Neon: use a connection string do painel com ?sslmode=require)
-DATABASE_URL="postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require"
+# Pooler (ep-xxx-pooler) — usado pela app / Prisma em runtime
+DATABASE_URL="postgresql://user:senha@ep-xxx-pooler.region.aws.neon.tech/shopmy?sslmode=require"
+# Sem pooler — migrations e db push (directUrl no schema)
+DATABASE_URL_UNPOOLED="postgresql://user:senha@ep-xxx.region.aws.neon.tech/shopmy?sslmode=require"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
