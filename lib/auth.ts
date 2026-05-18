@@ -1,11 +1,11 @@
 import { NextAuthOptions } from 'next-auth'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from './prisma'
 import * as bcrypt from 'bcryptjs'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // Apenas Credentials + JWT: não precisamos do PrismaAdapter (evita chamadas extra à BD no fluxo de sessão).
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -55,9 +55,14 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub!
-        session.user.role = token.role as string
+      // Sem utilizador autenticado o NextAuth pode não preencher `session.user`; não aceder a `.id` nesse caso.
+      if (session.user) {
+        if (token?.sub) {
+          session.user.id = token.sub
+        }
+        if (token?.role !== undefined) {
+          session.user.role = token.role as string
+        }
       }
       return session
     },
